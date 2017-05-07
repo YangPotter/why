@@ -1,0 +1,148 @@
+body{
+	background-repeat:repeat-x;
+	background-attachment: fixed;
+}
+#container {
+	width: 1002px;
+	height: 192px;
+	background: yellow;
+	border: 1px gray solid;
+	margin: auto;
+	}
+	
+	
+#top {
+	width: 1002px;
+	height: 189px;
+	background: pink;
+	border: 1px gray solid;
+}
+#logo{
+	width: 1002px;
+	height: 117px;
+	background: red;
+}
+#menu1{
+	width: 1002px;
+	height: 36px;
+	background: orange;
+	background-image: url(source/menu.gif);
+}
+.menu {
+	width: 77px;
+	height: 36px;
+	display: block;
+	float: left;
+	text-align: center;
+	line-height: 36px;
+	font: "微软雅黑";
+	font-size: 14px;
+	font-weight: 600;
+	color: white;
+	text-decoration: none;
+}
+.menu:hover {
+	color: #4e9922;
+	background-image: url(source/nav3.gif);
+}
+#menu2{
+	width: 1002px;
+	height: 36px;
+	background-image: url(source/nav3.gif)
+}
+#menu2img{
+	float: left;
+}
+.submenu{
+	width: 77px;
+	height: 36px;
+	/*float: left;*/
+	text-align: center;
+	line-height: 36px;
+	font: "微软雅黑";
+	font-size: 14px;
+	font-weight: 600;
+	color: black;
+}
+
+
+
+#middle {
+	width: 1002px;
+	height: 532px;
+	background: lightblue;
+	border: 1px gray solid;
+}
+#picture {
+	width: 600px;
+	height: 320px;
+	float: left;
+	background: greenyellow;
+}
+#news {
+	width: 402px;
+	height: 320px;
+	float: left;
+	background: #ffffff;
+}
+.newsli{
+	font-size: 13px;
+	margin-bottom: 8px;
+	text-decoration: none;
+	margin-left: 15px;
+	color: black;
+}
+#sub1 {
+	width: 292px;
+	height: 180px;
+	float: left;
+	background: #ffffff;
+}
+#sub2 {
+	width: 402px;
+	height: 180px;
+	float: left;
+	background: #ffffff;
+}
+
+#sub3 {
+	width: 307px;
+	height: 180px;
+	float: left;
+	background: #ffffff;
+}
+.llink{
+	font-size: 12px;
+	margin-bottom: 4px;
+	text-decoration: none;
+	margin-right: 12px;
+	color: black;
+}
+#sub4 {
+	width: 1002px;
+	height: 40px;
+	float: left;
+	background: #ffffff;
+}
+.sselect {
+	margin-top: 10px;
+	width: 180px;
+}
+#subdiv{
+	float: right;
+	margin-top: 6px;
+	margin-right: 20px;
+}
+
+#bottom {
+	width: 1002px;
+	height: 126px;
+	background: #ffffff;
+	text-align: center;
+	border: 1px gray solid;
+}
+#bottom2{
+	widows: 1002px;
+	height: 40px;
+	background-image: url(source/地址.jpg);
+}
