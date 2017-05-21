@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-Adapter</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<style type="text/css">
+			.a {
+				background: lightgray;
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello, DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="440">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="#simpleFactory">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="#stratagePattern">策略模式</a>
+							</li>
+							<li class="">
+								<a href="#principle">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="#decorator">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="#proxy">代理模式</a>
+							</li>
+							<li class="">
+								<a href="#factoryMethod">工厂方法模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+							</li>
+							<li class="">
+								<a href="#template">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="adapter" class="page-header">适配器模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								适配器模式（Adapter Pattern）是作为两个不兼容的接口之间的桥梁。
+								这种类型的设计模式属于结构型模式，它结合了两个独立接口的功能
+							</p>
+						</div>
+						<br />
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+//客户端
+public class AdapterDemo {
+	public static void main(String args[]) {
+		Target target = new Adapter();
+		target.Request();
+	}
+}
+
+class Target {        //目标，抽象类或接口
+	public void Request() {
+		System.out.println("普通请求！");
+	}
+}
+
+class Adapter extends Target {           //适配器
+	private Adaptee adaptee = new Adaptee();
+	
+	public void Request() {
+		adaptee.SpecificRequest();
+	}
+}
+
+class Adaptee {               //需要适配的类
+	public void SpecificRequest() {
+		System.out.println("特殊请求！");
+	}
+}
+
+
+							</code>
+							</pre>
+							
+						</figure>
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						
+						<img src="img/AdapterPattern/AdapterDemo.cld.jpg" alt="状态模式UML类图" /><br />
+						<div id="StateExample" class="bs-callout bs-callout-danger">
+							<h2 >适配器模式实例-篮球翻译适配器</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+public class AdapterPatternExample {              //客户端界面
+	public static void main(String args[]) {
+		Player b = new Forwards("巴蒂尔");
+		b.Attack();
+		Player m = new Guards("麦迪");
+		m.Attack();
+		
+		Player ym = new Center("姚明");
+		ym.Attack();
+		ym.Defense();
+	}
+}
+
+abstract class Player {       //球员类
+	protected String name;
+	
+	public Player() {
+		this.name = name;
+	}
+	public abstract void Attack();
+	public abstract void Defense();//进攻、防守抽象方法
+}
+
+class Forwards extends Player {         //前锋
+	public Forwards(String name) {
+		this.name = name;
+	}
+	
+	public void Attack() {
+		System.out.println("前锋 " + name + " 进攻！");
+	}
+	
+	public void Defense() {
+		System.out.println("前锋 " + name + " 防守！");
+	}
+}
+
+class Center extends Player {         //中锋
+	public Center(String name) {
+		this.name = name;
+	}
+	
+	public void Attack() {
+		System.out.println("中锋 " + name + " 进攻！");
+	}
+	
+	public void Defense() {
+		System.out.println("中锋 " + name + " 防守！");
+	}
+}
+
+class Guards extends Player {         //后卫
+	public Guards(String name) {
+		this.name = name;
+	}
+	
+	public void Attack() {
+		System.out.println("后卫 " + name + " 进攻！");
+	}
+	
+	public void Defense() {
+		System.out.println("后卫 " + name + " 防守！");
+	}
+}
+
+								</code>
+							</pre>
+						</figure>
+
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2 >优点与缺点</h2>
+						</div>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="list-group-item">1、可以让任何两个没有关联的类一起运行。</li>
+								<li class="list-group-item">2、提高了类的复用。</li>
+								<li class="list-group-item">3、增加了类的透明度。</li>
+								<li class="list-group-item">4、灵活性好。</li>
+							</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>缺点：</h4>
+						</div>
+							<ul class="list">
+								<li class="list-group-item"> 过多地使用适配器，会让系统非常零乱，不易整体进行把握。</li>
+							</ul>
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2 >本质</h2>
+						</div>
+							<ul class="list">
+								<li class="list-group-item">转换匹配、复用功能</li>
+							</ul>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="#adapter">适配器模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#StateExample">实例</a>
+									</li>
+									<li>
+										<a href="#AandD">优点与缺点</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="#memento">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>

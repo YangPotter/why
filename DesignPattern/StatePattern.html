@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-State</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<style type="text/css">
+			.a {
+				background: lightgray;
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello, DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="440">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="#simpleFactory">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="#stratagePattern">策略模式</a>
+							</li>
+							<li class="">
+								<a href="#principle">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="#decorator">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="#proxy">代理模式</a>
+							</li>
+							<li class="">
+								<a href="#factoryMethod">工厂方法模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+							</li>
+							<li class="">
+								<a href="#template">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="state" class="page-header">状态模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								在状态模式（State Pattern）中，类的行为是基于它的状态改变的。这种类型的设计模式属于行为型模式。
+								在状态模式中，我们创建表示各种状态的对象和一个行为随着状态对象改变而改变的 context 对象。
+							</p>
+						</div>
+						<br />
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+//客户端
+public class StateDemo {
+	public static void main(String args[]) {
+		Context c = new Context(new ConcreteStateA());
+		
+		c.Request();
+		c.Request();
+		c.Request();
+		c.Request();
+	}
+}
+
+//Context类，维护一个ConcreteState子类的实例，这个实例定义当前的状态。
+class Context {
+	private State state;
+	
+	public Context(State state) {
+		this.state = state;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+		System.out.println("当前状态" + getState());
+	}
+	
+	public void Request() {
+		state.Handle(this);
+	}
+}
+
+//State类，接口，封装与Context特定状态相关的行为。
+class State {
+	public void Handle(Context context) {
+	}
+}
+
+//ConcreteState类，具体状态，每个子类实现一个与Context的一个相关的行为。
+class ConcreteStateA extends State {
+	public void Handle(Context context) {
+		context.setState(new ConcreteStateB());
+	}
+}
+
+class ConcreteStateB extends State {
+	public void Handle(Context context) {
+		context.setState(new ConcreteStateA());
+	}
+}
+
+							</code>
+							</pre>
+							
+						</figure>
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						
+						<img src="img/StatePattern/StateDemo.cld.jpg" alt="状态模式UML类图" /><br />
+						<div id="StateExample" class="bs-callout bs-callout-danger">
+							<h2 >状态模式实例-工作状态</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+public class StatePatternExample {
+	public static void main(String args[]) {        //客户端界面
+		Work Projects = new Work();
+		Projects.setHour(9);
+		Projects.WriteProgram();
+		Projects.setHour(10);
+		Projects.WriteProgram();
+		Projects.setHour(12);
+		Projects.WriteProgram();
+		Projects.setHour(13);
+		Projects.WriteProgram();
+		Projects.setHour(14);
+		Projects.WriteProgram();
+		Projects.setHour(17);
+		
+		//Projects.setFinish(true);
+		Projects.setFinish(false);
+		
+		Projects.WriteProgram();
+		Projects.setHour(19);
+		Projects.WriteProgram();
+		Projects.setHour(22);
+		Projects.WriteProgram();
+	}
+
+}
+
+class Work {      //工作类
+	private WorkState current;
+	private double hour;
+	private boolean finish = false;
+	
+	public Work() {
+		current = new ForenoonWorkState();
+	}
+	
+	public void SetWorkState(WorkState s) {
+		current = s;
+	}
+	
+	public void WriteProgram() {
+		current.WriteProgram(this);
+	}
+
+	public double getHour() {
+		return hour;
+	}
+
+	public void setHour(double hour) {
+		this.hour = hour;
+	}
+
+	public boolean getFinish() {
+		return finish;
+	}
+
+	public void setFinish(boolean finish) {
+		this.finish = finish;
+	}
+}
+
+abstract class WorkState {      //抽象状态
+	public abstract void WriteProgram(Work w);
+}
+
+class ForenoonWorkState extends WorkState {     //上午工作状态
+	public void WriteProgram(Work w) {
+		if(w.getHour() < 12) {
+			System.out.println("当前时间："+ w.getHour()+ "点 上午工作，精神百倍!");
+		}else {
+			w.SetWorkState(new NoonWorkState());
+			w.WriteProgram();
+		}
+	}
+}
+
+class NoonWorkState extends WorkState {     //中午工作状态
+	public void WriteProgram(Work w) {
+		if(w.getHour() < 13) {
+			System.out.println("当前时间："+ w.getHour()+ "点 午饭；午休。");
+		}else {
+			w.SetWorkState(new AfternoonWorkState());
+			w.WriteProgram();
+		}
+	}
+}
+
+class AfternoonWorkState extends WorkState {     //下午工作状态
+	public void WriteProgram(Work w) {
+		if(w.getHour() < 17) {
+			System.out.println("当前时间："+ w.getHour()+ "点 状态不错，继续努力！");
+		}else {
+			w.SetWorkState(new EveningWorkState());
+			w.WriteProgram();
+		}
+	}
+}
+
+class EveningWorkState extends WorkState {     //晚间工作状态
+	public void WriteProgram(Work w) {
+		if(w.getFinish()) {
+			w.SetWorkState(new RestWorkState());
+			w.WriteProgram();
+		}else {
+			if(w.getHour() < 21) {
+				System.out.println("当前时间："+w.getHour()+"点 加班，疲累");
+			}else {
+				w.SetWorkState(new SleepingWorkState());
+				w.WriteProgram();
+			}
+		}
+		
+	}
+}
+
+class SleepingWorkState extends WorkState {     //睡眠状态
+	public void WriteProgram(Work w) {
+		System.out.println("当前时间：" + w.getHour() + "点 不行了，睡着了......");
+	}
+}
+
+class RestWorkState extends WorkState {     //下班休息状态
+	public void WriteProgram(Work w) {
+		System.out.println("当前时间：" + w.getHour() + "点 下班回家啦！");
+	}
+}
+								</code>
+							</pre>
+						</figure>
+
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2 >优点与缺点</h2>
+						</div>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="list-group-item">1.	简化应用逻辑控制</li>
+								<li class="list-group-item">2.	更好的分离状态和行为</li>
+								<li class="list-group-item">3.	更好的扩张性</li>
+								<li class="list-group-item">4.	显示化进行状态转换</li>
+							</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>缺点：</h4>
+						</div>
+							<ul class="list">
+								<li class="list-group-item">一个状态对应一个状态处理类，会使得程序引入太多的状态类，这样使程序变得杂乱</li>
+							</ul>
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2 >本质</h2>
+						</div>
+							<ul class="list">
+								<li class="list-group-item">根据状态来分离和选择行为</li>
+								<li class="list-group-item">状态模式是状态驱动，由上下文负责</li>
+							</ul>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="#state">状态模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#StateExample">实例</a>
+									</li>
+									<li>
+										<a href="#AandD">优点与缺点</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="#memento">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>
