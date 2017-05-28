@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-Proxy</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello， DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="440">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="#simpleFactory">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="#stratagePattern">策略模式</a>
+							</li>
+							<li class="">
+								<a href="#principle">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="#decorator">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="#proxy">代理模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#StateExample">实例</a>
+									</li>
+									<li>
+										<a href="#AandD">应用</a>
+									</li>
+									<li>
+										<a href="#Condition">应用场景</a>
+									</li>
+									<li>
+										<a href="#About">相关模式</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="#factoryMethod">工厂方法模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+							</li>
+							<li class="">
+								<a href="#template">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="proxy" class="page-header">代理模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								代理模式（Proxy Pattern）为其他对象提供一种代理以控制对之歌对象的访问。
+							</p>
+						</div>
+						<br />
+						
+						<p>
+							所谓代理，就是一个人或者一个机构代表另一个人或者另一个机构采取行动。
+							在一些情况下，<span class="text-info">一个客户不想或者不能够直接引用一个对象，而代理对象可以在客户端和目标对象之间起到中介的作用。</span> 
+						</p>
+						<br />
+						
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+//客户端
+class ProxyDemo {
+	public static void main(String args[]) {
+		Proxy proxy = new Proxy();
+		proxy.Request();
+	}
+}
+
+//Subject类，定义了RealSubject和Proxy的公用接口，
+//这样在任何使用RealSubject的地方都可以使用Proxy
+abstract class Subject {
+	public abstract void Request();
+}
+
+//RealSubject类，定义Proxy所代表的真实实体。
+class RealSubject extends Subject{
+	public void Request() {
+		System.out.println("真实的请求");
+	}
+}
+
+//Proxy类，保存一个引用使得代理可以访问实体，并提供一个与Subject的接口相同的接口，
+//这样代理就可以用来替代实体。
+class Proxy extends Subject {
+	RealSubject realSubject;
+	public void Request() {
+		if(realSubject == null) {
+			realSubject = new RealSubject();
+		}
+		realSubject.Request();
+	}
+}
+
+
+							</code>
+							</pre>
+							
+						</figure>
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						
+						<img src="img/ProxyPattern/Proxy.cld.jpg" alt="状态模式UML类图" /><br />
+						<div id="StateExample" class="bs-callout bs-callout-danger">
+							<h2>代理模式实例</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+public class AdapterPatternExample {              //客户端界面
+	public static void main(String args[]) {
+		Player b = new Forwards("巴蒂尔");
+		b.Attack();
+		Player m = new Guards("麦迪");
+		m.Attack();
+		
+		Player ym = new Center("姚明");
+		ym.Attack();
+		ym.Defense();
+	}
+}
+
+abstract class Player {       //球员类
+	protected String name;
+	
+	public Player() {
+		this.name = name;
+	}
+	public abstract void Attack();
+	public abstract void Defense();//进攻、防守抽象方法
+}
+
+class Forwards extends Player {         //前锋
+	public Forwards(String name) {
+		this.name = name;
+	}
+	
+	public void Attack() {
+		System.out.println("前锋 " + name + " 进攻！");
+	}
+	
+	public void Defense() {
+		System.out.println("前锋 " + name + " 防守！");
+	}
+}
+
+class Center extends Player {         //中锋
+	public Center(String name) {
+		this.name = name;
+	}
+	
+	public void Attack() {
+		System.out.println("中锋 " + name + " 进攻！");
+	}
+	
+	public void Defense() {
+		System.out.println("中锋 " + name + " 防守！");
+	}
+}
+
+class Guards extends Player {         //后卫
+	public Guards(String name) {
+		this.name = name;
+	}
+	
+	public void Attack() {
+		System.out.println("后卫 " + name + " 进攻！");
+	}
+	
+	public void Defense() {
+		System.out.println("后卫 " + name + " 防守！");
+	}
+}
+
+								</code>
+							</pre>
+						</figure>
+
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2>代理模式应用</h2>
+						</div>
+						<br />
+						<h3>远程（Remote）代理</h3>
+						<p class="lead">为一个位于不同的地址空间的对象提供一个局域代表对象。
+							可以隐藏一个对象存在于不同地址空间的事实。这个不同的地址空间可以是在本机器中，也可是在另一台机器中。
+							远程代理又叫做大使（Ambassador）。
+						</p>
+						<p>
+							可以将网络的细节隐藏起来，使得客户端不必考虑网络的存在。
+							客户完全可以认为被代理的对象是局域的而不是远程的，而代理对象承担了大部分的网络通信工作。
+						</p><br />
+						<h3>虚拟（Virtual）代理</h3>
+						<p class="lead">
+							代理对象可以在必要的时候才将被代理的对象加载。代理可以对加载的过程加以必要的优化。
+							当一个模块的加载十分耗费资源的时候，虚拟代理的优点就非常明显。
+						</p>
+						<p class="lead">某个客户端不能直接操作到某个对象，但又必须和那个对象有所互动。<br />例如： </p>
+						<ul>
+							<li class="text-primary">如果那个对象是一个是很大的图片，需要花费很长时间才能显示出来，那么当这个图片包含在文档中时，
+							使用编辑器或浏览器打开这个文档，打开文档必须很迅速，不能等待大图片处理完成，
+							这时需要做个图片Proxy来代替真正的图片。</li><br />
+							<li class="text-primary">如果那个对象在Internet的某个远端服务器上，直接操作这个对象因为网络速度原因可能比较慢，那我们可以先用Proxy来代替那个对象。</li>
+						</ul>
+						<p class="lead">总之原则是，<span class="text-danger">对于开销很大的对象，只有在使用它时才创建，</span>这个原则可以为我们节省很多宝贵的内存资源。</p>
+						<br />
+						<h3>保护（Protect or Access）代理（安全代理）</h3>
+						<p class="lead">
+							可以在运行时对用户的有关权限进行检查，然后在核实后决定将调用传递给被代理的对象。
+						</p>
+						<p>
+							<span class="text-info">授权机制：</span>不同级别的用户对同一对象拥有不同的访问权利，如Jive论坛系统中，
+							就使用Proxy进行授权机制控制，访问论坛有两种人：注册用户和游客（未注册用户），
+							Jive中就通过类似ForumProxy这样的代理来控制这两种用户对论坛的访问权限。
+						</p>
+						<h3>Copy-on-Write代理</h3>
+						<p class="lead">
+							虚拟代理的一种。把复制（克隆）拖延到只有在客户端需要时，才真正采取行动。
+						</p>
+						<h3>Cache代理</h3>
+						<p class="lead">
+							为那些昂贵操作的结果提供临时的存储空间，以便多个客户端可以共享这些结果。  
+						</p>
+						<h3>防火墙（Firewall）代理</h3>
+						<p class="lead">
+							保护目标，不让恶意用户接近。 
+						</p>
+						<h3>同步化（Synchronization）代理</h3>
+						<p class="lead">
+							使几个用户能够同时访问目标对象而没有冲突。 
+						</p>
+						<div id="Condition" class="bs-callout bs-callout-danger">
+							<h2>应用场景</h2>
+						</div>
+						<p class="label">
+							建议在如下情况中，选用代理模式：
+						</p>
+						<p>
+							<ul class="list">
+								<li class="list-group-item">需要为一个对象在不同的地址空间提供局部代表的时候，可以使用远程代理</li>
+								<li class="list-group-item">需要按照需要创建开销很大的对象的时候，可以使用虚代理</li>
+								<li class="list-group-item">需要控制对原始对象的访问的时候，可以使用保护代理</li>
+								<li class="list-group-item">需要在访问对象的时候执行一些附加操作的时候，可以使用智能指引代理</li>
+							</ul>
+						</p><br />
+						<div id="About" class="bs-callout bs-callout-danger">
+							<h2>相关模式</h2>
+						</div><br />
+						<h3>代理模式和适配器模式</h3><br />
+						<p>
+							这两个模式有一定的相似性，但也有差异。
+						         这两个模式有相似性，它们都为另一个对象提供间接性的访问，而且都是从自身以外的一个接口向这个对象转发请求。
+						         但是从功能上，两个模式是不一样的。适配器模式主要用来解决接口之间不匹配的问题，它通常是为所适配的对象提供一个不同的接口；
+						         而代理模式会实现和目标对象相同的接口。
+						</p><br />
+						<h3>代理模式和装饰模式</h3><br />
+						<p>
+							这两个模式从实现上相似，但是功能上是不同的。
+							装饰模式的实现和保护代理的实现上是类似的，都是在转调其它对象的前后执行一定的功能。但是它们的目的和功能都是不同的。
+							装饰模式的目的是为了让你不生成子类就可以给对象添加职责，也就是为了动态的增加功能；而代理模式的主要目的是控制对对象的访问。
+						</p><br />
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2>本质</h2>
+						</div>
+						<p class="lead">控制对象访问</p>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="#memento">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>
