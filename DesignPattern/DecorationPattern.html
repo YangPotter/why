@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-Proxy</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello， DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="440">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="#simpleFactory">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="#stratagePattern">策略模式</a>
+							</li>
+							<li class="">
+								<a href="#principle">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="#decorator">装饰模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#StateExample">实例</a>
+									</li>
+									<li>
+										<a href="#Condition">应用场景</a>
+									</li>
+									<li>
+										<a href="#About">相关模式</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="ProxyPattern.html">代理模式</a>
+							</li>
+							<li class="">
+								<a href="#factoryMethod">工厂方法模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+							</li>
+							<li class="">
+								<a href="#template">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="decorator" class="page-header">装饰模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								装饰模式（Decorator Pattern）动态的给一个对象添加一些额外的职责，就增加功能来说，装饰模式比生成子类更为灵活。
+							</p>
+						</div>
+						<br />
+						
+						<p>
+							装饰模式以对客户端透明的方式扩展对象的功能，是继承关系的一个替代方案。</span> 
+						</p>
+						<br />
+						
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+//客户端
+public class DecorationDemo {
+	public static void main(String []args) {
+		ConcreatDecorationB d2 = new ConcreatDecorationB(new ConcreatDecorationA(new 
+		                             ConcreatComponent()));
+		
+		d2.Operation();
+	}
+}
+
+/*父类/构件类*/
+abstract class Component {
+	public abstract void Operation();
+}
+
+/*创建构件，具体装饰对象，继承Component类，起到添加职责的功能*/
+class ConcreatComponent extends Component {
+	public void Operation() {
+		System.out.println("具体对象的操作");
+	}
+}
+
+/*装饰类，抽象类，继承Component类*/
+class Decorator extends Component {
+	protected Component component;   //聚合，创建父类的对象;
+	public void SetComponent(Component component) {  //初始化，可改为构造函数
+		this.component = component;
+	}
+	public void Operation() {   //中间介质
+		if(component != null) {
+			component.Operation();  //调用父类Component中抽象方法;
+		}
+	}
+}
+
+
+class ConcreatDecorationA extends Decorator {
+	private String addedState;
+	
+	public ConcreatDecorationA(Component component) {
+		//setAddedState(String addedState);
+		super.SetComponent(component);
+	}
+	public void setAddedState(String addedState) {
+		this.addedState = addedState;
+	}
+	
+	public void Operation() {
+		super.Operation();
+		setAddedState("New State");
+		System.out.println("具体装饰对象A的操作");
+	}
+}
+
+class ConcreatDecorationB extends Decorator {
+	public ConcreatDecorationB(Component component) {
+		super.SetComponent(component);
+	}
+	
+	private void AddedBehavior(){
+		
+	}
+	
+	public void Operation() {
+		super.Operation();
+		AddedBehavior();
+		System.out.println("具体装饰对象B的操作");
+	}
+}
+
+
+							</code>
+							</pre>
+							
+						</figure>
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						
+						<img src="img/DecorationPattern/DecorationPattern.cld.jpg" alt="状态模式UML类图" /><br />
+						<div id="StateExample" class="bs-callout bs-callout-danger">
+							<h2>装饰模式实例</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+//客户端
+public class DeractionPatternExample {
+	public static void main(String args[]) {
+		System.out.println("第一种装扮");
+		
+		Trouser tr = new Trouser(new Tshirts(new Person("why")));
+		tr.Show();
+	}
+}
+
+class Person {  //人类
+	public Person() {
+	
+	}
+	
+	private String name;
+	public Person(String name) {
+		this.name = name;
+	}
+	
+	public void Show() {
+		System.out.println("装扮的" + name);
+	}
+}
+
+class Finery extends Person {  //服饰类（Decorator）
+	protected Person component;
+	
+	public void Decorate(Person component) {
+		this.component = component;
+	}
+	
+	public void Show() {
+		if(component != null) {
+			component.Show();
+		}
+	}
+}
+
+class Tshirts extends Finery {      //T恤
+	public Tshirts(Person component) {
+		super.Decorate(component);
+	}
+	public void Show() {
+		System.out.println("T恤");
+		super.Show();
+	}
+}
+
+class Trouser extends Finery {  //裤子
+	public Trouser(Person component) {
+		super.Decorate(component);
+	}
+	public void Show() {
+		System.out.println("裤子");
+		super.Show();
+	}
+}
+
+
+								</code>
+							</pre>
+						</figure>
+
+						<div id="Condition" class="bs-callout bs-callout-danger">
+							<h2>应用场景</h2>
+						</div>
+						<p class="lead">
+							建议在如下情况中，选用装饰模式：
+						</p>
+						<ul>
+							<li class="text-primary">如果需要在不影响其它对象的情况下，以动态、透明的方式给对象添加职责，可以使用装饰模式，这几乎就是装饰模式的主要功能。</li><br />
+							<li class="text-primary">如果不合适使用子类来进行扩展的时候，可以考虑使用装饰模式，因为装饰模式是使用的“对象组合”的方式。
+							所谓不适合用子类扩展的方式，比如：扩展功能需要的子类太多，造成子类数目呈爆炸性增长。</li>
+						</ul>
+						<div id="About" class="bs-callout bs-callout-danger">
+						<h2>相关模式</h2>
+						</div><br />
+						<h3>装饰模式和适配器模式</h3><br />
+						<p>
+							这是两个没有什么关联的模式，放到一起来说，是因为它们有一个共同的别名：Wrapper。
+    						这两个模式功能上是不一样的，适配器模式是用来改变接口的，而装饰模式是用来改变对象功能的。
+						</p><br />
+						<h3>装饰模式与组合模式</h3><br />
+						<p>
+							这两个模式有相似之处，都涉及到对象的递归调用，从某个角度来说，可以把装饰看成是只有一个组件的组合。
+    						但是它们的目的完全不一样，装饰模式是要动态的给对象增加功能；
+    						而组合模式是想要管理组合对象和叶子对象，为它们提供一个一致的操作接口给客户端，方便客户端的使用。
+						</p><br />
+						<h3>装饰模式与策略模式</h3><br />
+						<p>
+							这两个模式可以组合使用。
+    						策略模式也可以实现动态的改变对象的功能，但是策略模式只是一层选择，也就是根据策略选择一下具体的实现类而已。而装饰模式不是一层，而是递归调用，无数层都可以，只要组合好装饰器的对象组合，那就可以依次调用下去，所以装饰模式会更灵活。
+    						而且策略模式改变的是原始对象的功能，不像装饰模式，后面一个装饰器，改变的是经过前一个装饰器装饰过后的对象，也就是策略模式改变的是对象的内核，而装饰模式改变的是对象的外壳。
+						</p>
+						<h3>装饰模式与模板方法模式</h3><br />
+						<p>
+							这是两个功能上有相似点的模式。
+    						模板方法模式主要应用在算法骨架固定的情况，那么要是算法步骤不固定呢，也就是一个相对动态的算法步骤，就可以使用装饰模式了，因为在使用装饰模式的时候，进行装饰器的组装，其实也相当于是一个调用算法步骤的组装，相当于是一个动态的算法骨架。
+    						既然装饰模式可以实现动态的算法步骤的组装和调用，那么把这些算法步骤固定下来，那就是模板方法模式实现的功能了，因此装饰模式可以模拟实现模板方法模式的功能。
+						</p>
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2>本质</h2>
+						</div>
+						<p class="lead">动态组合</p>
+						<ul>
+							<li class="text-primary">动态是手段，组合是目的</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="#memento">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>
