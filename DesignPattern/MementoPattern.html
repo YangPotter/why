@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-Memento</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello， DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="440">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="SimpleFactoryPattern.html">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="StrategyPattern.html">策略模式</a>
+							</li>
+							<li class="">
+								<a href="#principle">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="DecorationPattern.html">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="ProxyPattern.html">代理模式</a>
+							</li>
+							<li class="">
+								<a href="#factoryMethod">工厂方法模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+							</li>
+							<li class="">
+								<a href="#template">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="memento" class="page-header">备忘录模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								备忘录模式（Memento）：在不破坏封装性的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态。这样以后就可以将该对象恢复到原先保存的状态。
+							</p>
+						</div><br />
+							<p>
+								<span class="lead">Originator（发起人）：</span>负责创建一个备忘录Memento，用以记录当前时刻它的内部状态，并可以使用备忘录恢复内部状态。Originator可根据需要决定Memento存储Originator的哪些内容。
+							</p><br />
+							<p>
+								<span class="lead">Memento（备忘录）：</span>负责存储Originator对象的内部状态，并可防止Originator以外的其他对象访问备忘录Memento。
+								备忘录有两个接口，Caretaker只能看到备忘录的窄接口，它只能将备忘录传递给其他对象。Originator能够看到一个宽接口，允许它访问返回到先前状态所需的所有数据。
+							</p><br />
+							<p>
+								<span class="lead">Caretaker（管理者）：</span>负责保存好备忘录Memento，不能对备忘录的内容进行操作或检查。
+							</p><br />
+						
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+//客户端
+public class MementoDemo {
+	public static void main(String args[]) {
+		Originator origin = new Originator();
+		origin.setState("On");
+		origin.Show();
+		
+		Caretaker c = new Caretaker();
+		c.setMemento(origin.CreateMemento());
+		
+		origin.setState("Off");
+		origin.Show();
+		
+		origin.setMemento(c.getMemento());
+		origin.Show();
+	}
+}
+
+//发起人，Originator类
+class  Originator {       
+	
+	private String state;      //需要保存的属性，可能有多个
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	//创建备忘录，将当前需要保存的信息导入并实例化出一个Memento对象
+	public Memento CreateMemento() {
+		return new Memento(state);
+	}
+	
+	//恢复备忘录，将Memento导入并将相关数据恢复
+	public void setMemento(Memento memento) {
+		state = memento.getState();
+	}
+	
+	public void Show() {  //显示数据
+		System.out.println("State = " + state);
+	}
+}
+
+//备忘录Memento类
+class Memento {
+	
+	private String state;
+
+	public String getState() {
+		return state;      //需要保存的数据属性，可以是多个
+	}
+
+	public Memento(String state) {    //构造函数，将相关数据导入
+		this.state = state;
+	}
+}
+
+//管理者Caretaker类
+class Caretaker {
+	
+	private Memento memento;
+
+	public Memento getMemento() {
+		return memento;
+	}
+
+	public void setMemento(Memento memento) {
+		this.memento = memento;
+	}
+}
+
+								</code>
+							</pre>
+						</figure>
+
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						
+						<img src="img/MementoPattern/MementoPattern.cld.jpg" alt="状态模式UML类图" /><br />
+						<div id="Condition" class="bs-callout bs-callout-danger">
+							<h2>应用场景</h2>
+						</div>
+						<p class="lead">
+							建议在如下情况中，选用简单工厂模式：
+						</p>
+						<ul>
+							<li class="text-primary">如果必须保存一个对象在某一个时刻的全部或者部分状态，方便在以后需要的时侯，可以把该对象恢复到先前的状态，可以使用备忘录模式。</li><br />
+						</ul>
+						<div id="About" class="bs-callout bs-callout-danger">
+						<h2>相关模式</h2>
+						</div><br />
+						<h3>备忘录模式和原型模式</h3><br />
+						<p class="lead">这两个模式可以组合使用</p>
+						<ul>
+							<li class="text-primary">在原发器对象（发起人对象）创建备忘录对象的时候，如果原发器对象中全部或者大部分的状态都需要保存，一个简洁的方式就是直接克隆一个原发器对象。也就是说，这个时候备忘录对象里面存放的是一个原发器对象的实例。</li>
+						</ul><br />
+							
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2 >优点与缺点</h2>
+						</div>
+						<h3>优点：</h3><br />
+						<ul class="list">
+							<li>
+								有时一些发起人对象的内部信息必须保存在发起人对象以外的地方，但是必须要由发起人对象自己读取，这时，<span class="text-danger">使用备忘录模式可以把复杂的发起人内部信息对其他的对象屏蔽起来</span>，从而可以恰当地保持封装的边界。
+							</li><br />
+							<li>
+								本模式<span class="text-danger">简化了发起人类。</span>发起人不再需要管理和保存其内部状态的一个个版本，客户端可以自行管理他们所需要的这些状态的版本。
+							</li><br />
+							<li>
+								当发起人角色的状态改变的时候，有可能这个状态无效，这时候就可以使用暂时存储起来的备忘录<span class="text-danger">将状态复原。</span>
+							</li><br />
+						</ul>
+						<h3>缺点：</h3><br />
+						<ul class="list">
+							<li>
+								如果发起人角色的状态需要完整地存储到备忘录对象中，那么在资源消耗上面备忘录对象会很大。
+							</li><br />
+							<li>当负责人角色将一个备忘录 存储起来的时候，负责人可能并不知道这个状态会占用多大的存储空间，从而无法提醒用户一个操作是否很大。</li>
+						</ul>
+						<br />
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2>本质</h2>
+						</div>
+						<p class="lead">保存和恢复内部状态</p>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="#memento">备忘录模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#Condition">应用场景</a>
+									</li>
+									<li>
+										<a href="#About">相关模式</a>
+									</li>
+									<li>
+										<a href="#AandD">优点与缺点</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>
