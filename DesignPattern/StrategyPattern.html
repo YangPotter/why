@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-Strategy</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<style type="text/css">
+			.a {
+				background: lightgray;
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello, DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="440">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="SimpleFactoryPattern.html">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="#stratagePattern">策略模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#StateExample">实例</a>
+									</li>
+									<li>
+										<a href="#Condition">应用场景</a>
+									</li>
+									<li>
+										<a href="#About">相关模式</a>
+									</li>
+									<li>
+										<a href="#AandD">优点与缺点</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="#principle">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="DecorationPattern.html">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="ProxyPattern.html">代理模式</a>
+							</li>
+							<li class="">
+								<a href="#factoryMethod">工厂方法模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+							</li>
+							<li class="">
+								<a href="#template">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="stratagePattern" class="page-header">策略模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								策略模式（Stratygy）:它定义了算法家族，分别封装起来，让他们之可以互相替换，此模式让算法的变化，不会影响到使用算法的用户。
+							</p>
+						</div>
+						<br />
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+//客户端
+public class StrategyDemo {
+	public static void main(String args[]) {
+		Context context;
+		
+		context = new Context(new ConcreteStrategyA());
+		context.ContextInterface();
+		
+		context = new Context(new ConcreteStrategyB());
+		context.ContextInterface();
+		
+		context = new Context(new ConcreteStrategyC());
+		context.ContextInterface();
+	}
+}
+
+//抽象算法类
+abstract class Strategy {   //算法方法
+	public abstract void AlgorithmInterface();
+}
+
+
+//封装具体算法或行为，继承Strategy
+class ConcreteStrategyA extends Strategy { //算法A
+	public void AlgorithmInterface() {
+		System.out.println("实现算法A");
+	}
+}
+
+class ConcreteStrategyB extends Strategy {   //算法B
+	public void AlgorithmInterface() {
+		System.out.println("实现算法B");
+	}
+}
+
+class ConcreteStrategyC extends Strategy {   //算法C
+	public void AlgorithmInterface() {
+		System.out.println("实现算法C");
+	}
+}
+
+
+//上下文
+class Context {
+	Strategy strategy;
+	
+	public Context(Strategy strategy) {
+		this.strategy = strategy;
+	}
+
+	public void ContextInterface() {   //上下文接口
+		strategy.AlgorithmInterface();
+	}
+}
+
+							</code>
+							</pre>
+							
+						</figure>
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						
+						<img src="img/StrategyPattern/StrategyPattern.cld.jpg" alt="状态模式UML类图" /><br />
+						<div id="StateExample" class="bs-callout bs-callout-danger">
+							<h2 >策略模式实例</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+//客户端
+public class StrategyPatternExample {
+	public static void main(String args[]) {
+		double total = 0;
+		CashSuper csuper = CashFactory.createCashAccept("Normal");
+		double totalPrices = csuper.acceptCash(100);
+		
+		total = total + totalPrices;
+		System.out.println("总价格为：" + total);
+	}
+}
+
+
+//抽象算法类
+abstract class CashSuper {   //算法方法
+	public abstract double acceptCash(double money);
+}
+
+
+//封装具体算法或行为，继承Strategy
+class CashNormal extends CashSuper { //算法A
+	public double acceptCash(double money) {
+		return money;
+	}
+}
+
+class CashRebate extends CashSuper {   //算法B
+	private double moneyRebate = 1.0;
+	
+	public CashRebate(String moneyRebate) {
+		this.moneyRebate = Double.parseDouble(moneyRebate);
+	}
+	public double acceptCash(double money) {
+		return money * moneyRebate;
+	}
+}
+
+class CashReturn extends CashSuper {   //算法C
+	private double moneyCondition = 0.0;
+	private double moneyReturn = 0.0;
+	
+	public CashReturn(String moneyCondition, String moneyReturn) {
+		this.moneyCondition = Double.parseDouble(moneyCondition);
+		this.moneyReturn = Double.parseDouble(moneyReturn);
+	}
+	
+	public double acceptCash(double money) {
+		double result = money;
+		if(money >= moneyCondition) {
+			result = money - Math.floor(money / moneyCondition) * moneyReturn;
+		}
+		return result;
+	}
+}
+
+
+//上下文
+class CashFactory {
+	public static CashSuper createCashAccept(String type) {
+		CashSuper cs = null;
+		switch(type) {
+		case "Normal":
+			cs = new CashNormal();
+			break;
+		case "Return":
+			cs = new CashReturn("300", "100");
+			break;
+		case "Rebate":
+			cs = new CashRebate("0.8");
+			break;
+		}
+		return cs;
+	}
+}
+								</code>
+							</pre>
+						</figure>
+
+						<div id="Condition" class="bs-callout bs-callout-danger">
+							<h2>应用场景</h2>
+						</div>
+						<p class="lead">
+							建议在如下情况中，选用简单工厂模式：
+						</p>
+						<ul>
+							<li class="text-primary">出现有许多相关的类，仅仅是行为有差别的情况，可以使用策略模式来使用多个行为中的一个来配置一个类的方法，实现算法动态切换。</li><br />
+							<li class="text-primary">出现同一个算法，有很多不同的实现的情况，可以使用策略模式来把这些“不同的实现”实现成为一个算法的类层次。</li>
+							<li class="text-primary">需要封装算法中，与算法相关的数据的情况，可以使用策略模式来避免暴露这些跟算法相关的数据结构。</li>
+							<li class="text-primary">出现抽象一个定义了很多行为的类，并且是通过多个if-else语句来选择这些行为的情况，可以使用策略模式来代替这些条件语句。</li>
+						</ul>
+						<br />
+						
+						<div id="About" class="bs-callout bs-callout-danger">
+						<h2>相关模式</h2>
+						</div><br />
+						<h3>策略模式和状态模式</h3><br />
+						<p>
+							这两个模式从模式结构上看是一样的，但是实现的功能是不一样的。
+						         状态模式是根据状态的变化来选择相应的行为，不同的状态对应不同的类，每个状态对应的类实现了该状态对应的功能，在实现功能的同时，还会维护状态数据的变化。这些实现状态对应的功能的类之间是不能相互替换的。
+						         策略模式是根据需要或者是客户端的要求来选择相应的实现类，各个实现类是平等的，是可以相互替换的。
+						         另外策略模式可以让客户端来选择需要使用的策略算法，而状态模式一般是由上下文，或者是在状态实现类里面来维护具体的状态数据，通常不由客户端来指定状态。
+
+						</p>
+						<br />
+						<h3>策略模式和模板方法模式</h3><br />
+						<p>
+							这两个模式可组合使用，如同前面示例的那样。模板方法重在封装算法骨架，而策略模式重在分离并封装算法实现。
+						</p>
+						<br />
+						<h3>策略模式和享元模式</h3><br />
+						<p>
+							这两个模式可组合使用。    策略模式分离并封装出一系列的策略算法对象，这些对象的功能通常都比较单一，很多时候就是为了实现某个算法的功能而存在，因此，针对这一系列的、多个细粒度的对象，可以应用享元模式来节省资源，但前提是这些算法对象要被频繁的使用，如果偶尔用一次，就没有必要做成享元了。
+						</p>
+						<br />
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2 >优点与缺点</h2>
+						</div>
+							<h3>优点：</h3>
+							<ul class="list">
+								<li class="list-group-item">1.定义一系列算法</li>
+								<li class="list-group-item">2.避免多重条件语句</li>
+								<li class="list-group-item">3.更好的扩展性</li>
+							</ul>
+							<h3>缺点：</h3>
+							<ul class="list">
+								<li class="list-group-item">1.客户必须了解每种策略的不同</li>
+								<li class="list-group-item">2.增加了对象数目</li>
+							</ul>
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2 >本质</h2>
+						</div>
+							<p class="lead">分离算法，选择实现。</p>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="#memento">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>
