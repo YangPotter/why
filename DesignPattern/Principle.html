@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-State</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<style type="text/css">
+			.a {
+				background: lightgray;
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello, DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="440">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="SimpleFactoryPattern.html">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="StrategyPattern.html">策略模式</a>
+							</li>
+							<li class="">
+								<a href="#principle">设计模式原则</a>
+								<ul class="nav">
+									<li>
+										<a href="#SRP">单一职责原则</a>
+									</li>
+									<li>
+										<a href="#OCP">开放-封闭原则</a>
+									</li>
+									<li>
+										<a href="#LSP">里氏代换原则</a>
+									</li>
+									<li>
+										<a href="#DIP">依赖倒转原则</a>
+									</li>
+									<li>
+										<a href="#ISP">接口隔离原则</a>
+									</li>
+									<li>
+										<a href="#HJ">合成/聚合复用原则</a>
+									</li>
+									<li>
+										<a href="#LoD">迪米特法则</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="DecorationPattern.html">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="ProxyPattern.html">代理模式</a>
+							</li>
+							<li class="">
+								<a href="#factoryMethod">工厂方法模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+							</li>
+							<li class="">
+								<a href="#template">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="principle" class="page-header">设计模式原则</h1>
+						<ul class="lead">
+							<li>设计原则是思想上的指导</li>
+							<li>设计模式是实现上的手段</li>
+							<li>设计模式是设计原则的具体体现</li>
+							<li>在实际开发中，很少做到完全遵守，总是在有意无意的违反一些或者部分原则</li>
+							<li>设计是一种危险的平衡艺术</li>
+						</ul>
+						
+						
+						
+						<div id="SRP" class="bs-callout bs-callout-info">
+							<h2>单一职责原则（SRP）</h2>	
+						</div><br />
+						<p class="lead text-danger">就一个类而言，应该仅有一个引起它变化的原因。</p>
+						<p>如果一个类承担的职责过多，就等于把这些职责耦合在一起，一个职责的变化可能会削弱或者抑制这个类完成其他职责的能力。这种耦合会导致脆弱的设计，当变化发生时，设计会遭受到意想不到的破坏。</p>
+						<p>难点在于如何区分职责、职责的粒度问题。</p>
+						<p>软件设计真正要做的内容，就是发现职责并把那些职责相互分离。</p>
+						<p>如果你能够想到多于一个的动机去改变一个类，那么这个类就具有多于一个的职责，就应该考虑类的职责分离。</p>
+						
+						
+						
+						<div id="OCP" class="bs-callout bs-callout-info">
+							<h2 >开放-封闭原则（OCP）</h2>
+						</div>
+						<p class="lead text-danger">一个软件实体应当对扩展开放，对修改关闭。</p>
+						<h3>需要考虑：</h3><br />
+						<p>怎样的设计才能面对需求的改变却可以保持相对稳定，从而使得系统可以在第一个版本以后不断推出新的版本。</p>
+						<p>面对需求，对程序的改动是通过增加新的代码进行的，而不是更改现有代码。</p>
+						<h3>关键：</h3><br />
+						<p><span class="text-primary">合理地抽象、分离出变化与不变化的部分，</span>为变化的部分预留下可扩展的方式。例如：<span class="text-danger">钩子方法</span>或是<span class="text-danger">动态组合对象</span>等</p>
+						<div id="Condition" class="bs-callout bs-callout-info">
+							<h4>钩子方法 :</h4>
+							<p>是对于抽象方法或者接口中定义的方法的一个空实现，在实际中的应用，比如说有一个接口，这个接口里有7个方法，而你只想用其中1个方法，那么这时，你可以写一个抽象类实现这个接口，在这个抽象类里将你要用的那个方法设置为abstract，其它方法进行空实现，然后你再继承这个抽象类，就不需要实现其它不用的方法，这就是钩子方法的作用。</p>
+						</div>
+						<h4>例如：</h4>
+						<img src="img/Princinple/zhaoan.png"/><br /><br />
+						<ul style="font-size: 16px;">
+							<li>招安之法的关键便是不允许更改现有的秩序，但允许将被招安者纳入现有秩序中，从而扩展了这一秩序。</li>
+							<li>用面向对象的语言来讲，不允许更改的是系统的抽象层，而允许更改的是系统的实现层。 </li>
+						</ul><br />
+						<p class="lead">
+							要完全遵守开闭原则是不可能的，也没这个必要。适当的抽象可以提高系统的<span class="text-danger">灵活性、可扩展性、可维护性；</span>过度抽象，会大大增加系统的复杂程度。
+						</p>
+						
+						
+						<div id="LSP" class="bs-callout bs-callout-info">
+						<h2>里氏代换原则（LSP）</h2>
+						</div><br />
+						<p class="lead text-danger">子类型必须能够替换它们的父类型。</p>
+						<p>只有当子类可以替换掉父类，软件单位的功能不受到影响时，父类才能真正被复用，而子类也能够在父类的基础上增加新的行为。</p>
+						<p>由于子类型的可替换性才使得使用父类类型的模块在无需修改的情况下就可以扩展。</p>
+						
+						
+						<div id="DIP" class="bs-callout bs-callout-info">
+						<h2>依赖倒转原则（DIP） </h2>
+						</div><br />
+						<p class="lead text-danger">要依赖于抽象，不要依赖于具体。</p>
+						<h3>原则表述：</h3><br />
+						<ul class="list">
+							<li>
+								抽象不应当依赖于具体实现；具体实现应当依赖于抽象；
+							</li><br />
+							<li>
+								高层模块不应当依赖于底层模块，二者都应该依赖于抽象；
+							</li><br />
+							<li>
+								要针对接口编程，不针对实现编程。
+							</li><br />
+						</ul>
+						<h3>修电脑得到的启示：</h3><br />
+						<h4 class="text-primary">强内聚、松耦合</h4>
+						<p>由于PC易插拨的方式，那么不管哪一个出问题，都可以在不影响别的部件的前题下进行修改或替换。</p><br />
+						<h4 class="text-primary">依赖倒转原则</h4>
+						<p>要针对接口编程，不要对实现编程，无论主板、CPU、内存、硬盘都是在针对接口编程，如果针对实现编程，那就会出现换内存需要把主板也换了的尴尬。</p>
+						<br />
+
+
+						<div id="ISP" class="bs-callout bs-callout-info">
+						<h2>接口隔离原则（ISP） </h2>
+						</div><br />
+						<p class="lead text-danger">使用多个专门的接口比使用单一的总接口要好。</p>
+						<p>从一个客户类的角度来讲，一个类对另外一个类的依赖性应当是建立在最小接口上的。</p>
+						<p>过于臃肿的接口是对接口的污染，不应该强迫客户依赖于它们不用的方法。</p>
+						<h3>实现方法：</h3><br />
+						<p>使用多重继承分离接口 </p>
+						
+						
+						
+						<div id="HJ" class="bs-callout bs-callout-info">
+						<h2>合成/聚合复用原则 </h2>
+						</div><br />
+						<p class="lead text-danger">要尽量使用合成/聚合，而不是继承关系达到复用的目的。</p>
+						<p><span class="text-primary">合成/聚合原则</span>就是在一个新的对象里面使用一些已有的对象，使之成为新对象的一部分；新的对象通过向这些对象的委派达到复用已有功能的目的。</p>
+						
+						<div id="LoD" class="bs-callout bs-callout-info">
+						<h2>迪米特法则（LoD） </h2>
+						</div><br />
+						<p class="lead text-danger">如果两个类不必彼此直接通信，那么这两个类就不应当发生直接的相互作用。如果其中一个类需要调用另一个类的某一个方法的话，可以通过第三者转发这个调用。</p>
+						<p>也就是说，一个对象应当对其它对象有尽可能少的了解。</p>
+						<h3>其他表述：</h3>
+						<ul>
+							<li>只与你直接的朋友们通信；</li>
+							<li>不要跟“陌生人”说话；</li>
+							<li>每一个软件单位对其它的单位都只有最少的知识，而且局限于那些与本单位密切相关的软件单位。</li>
+						</ul>
+						<div id="About" class="bs-callout bs-callout-warning">
+							<p>迪米特法则其根本思想，是强调了类之间的松耦合。</p>
+							<p>类之间的耦合越弱，越有利于复用，一个处于弱耦合的类被修改，不会对有关系的类造成波及。</p>
+							<p>信息的隐藏促进了软件的复用。</p>
+						</div><br />		
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="MementoPattern.html">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>
