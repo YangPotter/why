@@ -57,12 +57,18 @@
 							</li>
 							<li class="">
 								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
 								<ul class="nav">
 									<li>
 										<a href="#StateDemo">模版</a>
-									</li>
-									<li>
-										<a href="#StateUML">类图</a>
 									</li>
 									<li>
 										<a href="#Condition">应用场景</a>
@@ -78,15 +84,6 @@
 									</li>
 								</ul>
 							</li>
-							<li class="">
-								<a href="#builder">建造者模式</a>
-							</li>
-							<li class="">
-								<a href="#observer">观察者模式</a>
-							</li>
-							<li class="">
-								<a href="#abstractFactory">抽象工厂模式</a>
-							</li>
 							
 						</ul>
 					</nav>
@@ -94,14 +91,16 @@
 				<div class="col-md-8 ">
 
 					<div class="bs-docs-section">
-						<h1 id="facade" class="page-header">外观模式</h1>
+						<h1 id="abstractFactory" class="page-header">抽象工厂模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								外观模式（Facade），为子系统中的一组接口提供一个一致的界面，此模式定义了一个高层的接口，这个接口使得这一子系统更加容易使用。
+								抽象工厂模式（Abstract Factory），提供一个创建一系列相关或相互依赖对象的接口，而无需指定他们具体的类。 
 							</p>
 						</div><br />
-						<p><span class="text-primary">外观(Facade)角色：</span>客户端可以调用这个角色的方法。此角色知晓相关的(一个或者多个)子系统的功能和责任。在正常情况下，本角色会将所有从客户端发来的请求委派到相应的子系统去。</p>
-						<p><span class="text-primary">子系统(subsystem)角色：</span>可以同时有一个或者多个子系统。每一个子系统都不是一个单独的类，而是一个类的集合。每一个子系统都可以被客户端直接调用，或者被门面角色调用。子系统并不知道门面的存在，对于子系统而言，门面仅仅是另外一个客户端而已。 </p>
+						<p><span class="text-primary">抽象工厂（Abstract Factory）角色：</span>担任这个角色的是工厂方法模式的核心，它是与应用系统商业逻辑无关的。 </p>
+						<p><span class="text-primary">具体工厂（Concrete Factory）角色：</span>这个角色直接在客户端的调用下创建产品的实例。这个角色含有选择合适的产品对象的逻辑，而这个逻辑是与应用系统的商业逻辑紧密相关的。 </p>
+						<p><span class="text-primary">抽象产品（Abstract Product）角色：</span>担任这个角色的类是工厂方法模式所创建的对象的父类，或它们共同拥有的接口。 </p>
+						<p><span class="text-primary">具体产品（Concrete Product）角色：</span>抽象工厂模式所创建的任何产品对象都是某一个具体产品类的实例。这是客户端最终需要的东西，其内部一定充满了应用系统的商业逻辑。 </p>
 						<div id="StateDemo" class="bs-callout bs-callout-danger">
 							<h2 >模版</h2>
 						</div>
@@ -110,104 +109,192 @@
 							<pre>
 								<code>
 
-//外观模式
-package FacadePattern;
+//抽象工厂模式
+package AbstractFactory;
 
-//客户端
-//可以不知三个子系统类的存在
-public class FacadePatternDemo {
+public class AbstractFactoryDemo {
 
 	public static void main(String[] args) {
-		Facade facade = new Facade();
+		User user = new User();
+		Department dept = new Department();
 		
-		facade.MethodA();
-		facade.MethodB();
+		IUser iu = DataAccess.CreateUser();
+		
+		iu.Insert(user);
+		iu.GetUser(1);
+		
+		IDepartment id = DataAccess.CreateDepartment();
+		id.Insert(dept);
+		id.GetDepartment(1);
+	}
+
+}
+ //用户表
+class User {
+	private int id;
+	private String name;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+}
+
+interface IUser {
+	void Insert(User user);
+	User GetUser(int id);
+}
+
+
+class SqlserverUser implements IUser {
+	@Override
+	public void Insert(User user) {
+		System.out.println("在SQL Server中给User表增加一条记录");
+	}
+	
+	public User GetUser(int id) {
+		System.out.println("在SQL Server中根据ID得到User表一条记录");
+		return null;
 	}
 
 }
 
-//外观类，他需要了解所有的子系统的方法或属性，进行组合，以备外界使用。
-class Facade {
-	SubSystemOne one;
-	SubSystemTwo two;
-	SubSystemThree three;
-	SubSystemFour four;
-	
-	public Facade() {
-		one = new SubSystemOne();
-		two = new SubSystemTwo();
-		three = new SubSystemThree();
-		four = new SubSystemFour();
+class AccessUser implements IUser {
+	@Override
+	public void Insert(User user) {
+		System.out.println("在Access中给User表增加一条记录");
 	}
 	
-	public void MethodA() {
-		one.MethodOne();
-		two.MethodTwo();
-		four.MethodFour();
+	public User GetUser(int id) {
+		System.out.println("在Access中根据ID得到User表一条记录");
+		return null;
 	}
-	
-	public void MethodB() {
-		three.MethodThree();
-		four.MethodFour();
+
+}
+
+//部门表
+class Department {
+	private int id;
+	private String deptName;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getDeptName() {
+		return deptName;
+	}
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
 	}
 }
 
-//子系统类
-class SubSystemOne {
-	public void MethodOne() {
-		System.out.println("子系统方法一");
+interface IDepartment {
+	void Insert(Department department);
+	Department GetDepartment(int id);
+	
+}
+
+class SqlserverDepartment implements IDepartment {
+
+	@Override
+	public void Insert(Department department) {
+		System.out.println("在SQL Server中给Department表增加一条记录");
+	}
+	
+	public Department GetDepartment(int id) {
+		System.out.println("在SQL Server中根据ID得到Department表一条记录");
+		return null;
 	}
 }
-class SubSystemTwo {
-	public void MethodTwo() {
-		System.out.println("子系统方法二");
+
+
+class AccessDepartment implements IDepartment {
+	
+	@Override
+	public void Insert(Department department) {
+		System.out.println("在Access中给Department表增加一条记录");
+	}
+	
+	public Department GetDepartment(int id) {
+		System.out.println("在Access中根据ID得到Department表一条记录");
+		return null;
 	}
 }
-class SubSystemThree {
-	public void MethodThree() {
-		System.out.println("子系统方法三");
+
+
+
+
+
+//获取数据库
+class DataAccess {
+	private static String db = null;
+	
+	public static IUser CreateUser() {
+		IUser result = null;
+		switch(db) {
+		case "Sqlserver":
+			result = new SqlserverUser();
+			break;
+		case "Access":
+			result = new AccessUser();
+			break;
+		}
+		return result;
+	}
+	
+	public static IDepartment CreateDepartment() {
+		IDepartment result = null;
+		switch(db) {
+		case "Sqlserver":
+			result = new SqlserverDepartment();
+			break;
+		case "Access":
+			result = new AccessDepartment();
+			break;
+		}
+		return result;
 	}
 }
-class SubSystemFour {
-	public void MethodFour() {
-		System.out.println("子系统方法四");
-	}
-}
+
+
+
 
 
 								</code>
 							</pre>
 						</figure>
 
-						<div id="StateUML" class="bs-callout bs-callout-danger">
-							<h2 >UML类图</h2>
-						</div>
-						<img src="img/FacadePattern/FacadePattern.cld.jpg" alt="状态模式UML类图" /><br />
 						
 						<div id="Condition" class="bs-callout bs-callout-danger">
 							<h2>应用场景</h2>
 						</div>
 						<p class="lead">
-							建议在如下情况中，选用外观模式：
+							建议在如下情况中，选用抽象工厂模式：
 						</p>
 						<ul>
-							<li class="text-primary">如果你希望为一个复杂的子系统提供一个简单接口的时候，可以考虑使用外观模式，使用外观对象来实现大部分客户需要的功能，从而简化客户的使用</li><br />
-							<li class="text-primary">如果想要让客户程序和抽象类的实现部分松散耦合，可以考虑使用外观模式，使用外观对象来将这个子系统与它的客户分离开来，从而提高子系统的独立性和可移植性</li>
-							<li class="text-primary">如果构建多层结构的系统，可以考虑使用外观模式，使用外观对象作为每层的入口，这样可以简化层间调用，也可以松散层次之间的依赖关系</li>
+							<li class="text-primary">如果希望一个系统独立于它的产品的创建，组合和表示的时候，换句话说，希望一个系统只是知道产品的接口，而不关心实现的时候。</li><br />
+							<li class="text-primary">如果一个系统要由多个产品系列中的一个来配置的时候，换句话说，就是可以动态的切换产品簇的时候。</li>
+							<li class="text-primary">如果要强调一系列相关产品的接口，以便联合使用它们的时候。</li>
 						</ul>
 						<br />
 						
 						<div id="About" class="bs-callout bs-callout-danger">
 						<h2>相关模式</h2>
 						</div><br />
-						<h3>外观模式和中介者模式</h3><br />
-						<p>这两个模式非常类似，但是有本质的区别。
-						    中介者模式主要用来封装多个对象之间相互的交互，多用在系统内部的多个模块之间；而外观模式封装的是单向的交互，是从客户端访问系统的调用，没有从系统中来访问客户端的调用。
-						    在中介者模式的实现里面，是需要实现具体的交互功能的；而外观模式的实现里面，一般是组合调用或是转调内部实现的功能，通常外观模式本身并不实现这些功能。
-						    中介者模式的目的主要是松散多个模块之间的耦合，把这些耦合关系全部放到中介者中去实现；而外观模式的目的是简化客户端的调用，这点和中介者模式也不同。
-						</p>
-						<h3>外观模式和单例模式</h3><br />
-						<p> 通常一个子系统只需要一个外观实例，所以外观模式可以和单例模式组合使用，把Facade类实现成为单例。当然，也可以跟前面示例的那样，把外观类的构造方法私有化，然后把提供给客户端的方法实现成为静态的。</p>
+						<h3>抽象工厂模式和工厂方法模式</h3><br />
+						<p>这两个模式既有区别，又有联系，可以组合使用。工厂方法模式一般是针对单独的产品对象的创建，而抽象工厂模式注重产品簇对象的创建，这是它们的区别。</p>
+						<h3>抽象工厂模式和单例模式</h3><br />
+						<p>这两个模式可以组合使用。在抽象工厂模式里面，具体的工厂实现，在整个应用中，通常一个产品系列只需要一个实例就可以了，因此可以把具体的工厂实现成为单例。</p>
 						<br />
 						
 						
@@ -218,23 +305,20 @@ class SubSystemFour {
 							<h4>优点：</h4>
 						</div>
 							<ul class="list">
-								<li class="lead">松散耦合</li>
-								<p> 外观模式松散了客户端与子系统的耦合关系，让子系统内部的模块能更容易扩展和维护。</p>
-								<li class="lead">简单易用</li>
-								<p> 外观模式让子系统更加易用，客户端不再需要了解子系统内部的实现，也不需要跟众多子系统内部的模块进行交互，只需要跟外观交互就可以了，相当于外观类为外部客户端使用子系统提供了一站式服务。</p>
-								<li class="lead">更好的划分访问层次</li>
-								<p> 通过合理使用Facade，可以帮助我们更好的划分访问的层次。有些方法是对系统外的，有些方法是系统内部使用的。把需要暴露给外部的功能集中到外观中，这样既方便客户端使用，也很好的隐藏了内部的细节。</p>
+								<li class="lead">分离接口和实现</li>
+								<li class="lead">使得切换产品簇变得容易</li>
 							</ul>
 						<div id="AandD" class="bs-callout bs-callout-warning">
 							<h4>缺点：</h4>
 						</div>
 							<ul class="list">
-								<p>过多的或者是不太合理的Facade也容易让人迷惑，到底是调用Facade好呢，还是直接调用模块好。</p>
+								<li class="lead">不太容易扩展新的产品</li>
+								<li class="lead">容易造成类层次复杂</li>
 							</ul>
 						<div id="Nature" class="bs-callout bs-callout-danger">
 							<h2 >本质</h2>
 						</div>
-						<p class="lead">封装交互，简化调用。</p>
+						<p class="lead">选择产品簇的实现。</p>
 					</div>
 				</div>
 				<div class="col-md-2 ">

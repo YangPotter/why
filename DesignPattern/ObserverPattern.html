@@ -57,6 +57,12 @@
 							</li>
 							<li class="">
 								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
 								<ul class="nav">
 									<li>
 										<a href="#StateDemo">模版</a>
@@ -79,12 +85,6 @@
 								</ul>
 							</li>
 							<li class="">
-								<a href="#builder">建造者模式</a>
-							</li>
-							<li class="">
-								<a href="#observer">观察者模式</a>
-							</li>
-							<li class="">
 								<a href="#abstractFactory">抽象工厂模式</a>
 							</li>
 							
@@ -94,14 +94,15 @@
 				<div class="col-md-8 ">
 
 					<div class="bs-docs-section">
-						<h1 id="facade" class="page-header">外观模式</h1>
+						<h1 id="observer" class="page-header">观察者模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								外观模式（Facade），为子系统中的一组接口提供一个一致的界面，此模式定义了一个高层的接口，这个接口使得这一子系统更加容易使用。
+								观察者模式（Observer），观察者模式定义了一种一对多的依赖关系，让多个观察者对象同时监听某一个主题对象。这个主题对象在状态上发生变化时，会通知所有观察者对象，使它们能够自动更新自己。
 							</p>
 						</div><br />
-						<p><span class="text-primary">外观(Facade)角色：</span>客户端可以调用这个角色的方法。此角色知晓相关的(一个或者多个)子系统的功能和责任。在正常情况下，本角色会将所有从客户端发来的请求委派到相应的子系统去。</p>
-						<p><span class="text-primary">子系统(subsystem)角色：</span>可以同时有一个或者多个子系统。每一个子系统都不是一个单独的类，而是一个类的集合。每一个子系统都可以被客户端直接调用，或者被门面角色调用。子系统并不知道门面的存在，对于子系统而言，门面仅仅是另外一个客户端而已。 </p>
+						<p><span class="text-primary">抽象观察者（Observer）角色：</span>为所有的具体观察者定义一个接口，在得到主题的通知时更新自己。这个接口叫做更新接口。抽象观察者角色一般用一个抽象类或者一个接口实现。在这个示意性的实现中，更新接口只包含一个方法（即Update()方法），这个方法叫做更新方法。 </p>
+						<p><span class="text-primary">具体主题（ConcreteSubject）角色：</span>将有关状态存入具体现察者对象；在具体主题的内部状态改变时，给所有登记过的观察者发出通知。具体主题角色又叫做具体被观察者角色（Concrete Observable）。具体主题角色通常用一个具体子类实现。 </p>
+						<p><span class="text-primary">具体观察者（ConcreteObserver）角色：</span>具体现察者角色实现抽象观察者角色所要求的更新接口，以便使本身的状态与主题的状态相协调。如果需要，具体现察者角色可以保存一个指向具体主题对象的引用。具体观察者角色通常用一个具体子类实现。 </p>
 						<div id="StateDemo" class="bs-callout bs-callout-danger">
 							<h2 >模版</h2>
 						</div>
@@ -110,70 +111,90 @@
 							<pre>
 								<code>
 
-//外观模式
-package FacadePattern;
+//观察者模式
+package ObserverPattern;
+import java.util.*;
 
-//客户端
-//可以不知三个子系统类的存在
-public class FacadePatternDemo {
+public class ObserverDemo {
 
 	public static void main(String[] args) {
-		Facade facade = new Facade();
+		ConcreteSubject s = new ConcreteSubject();
 		
-		facade.MethodA();
-		facade.MethodB();
+		s.Attach(new ConcreteObserver(s, "X"));
+		s.Attach(new ConcreteObserver(s, "Y"));
+		s.Attach(new ConcreteObserver(s, "Z"));
+		s.setSubjectState("ABC");
+		s.Notify();
 	}
 
 }
 
-//外观类，他需要了解所有的子系统的方法或属性，进行组合，以备外界使用。
-class Facade {
-	SubSystemOne one;
-	SubSystemTwo two;
-	SubSystemThree three;
-	SubSystemFour four;
+//Subject类
+abstract class Subject {
+	private List<Observer> observers = new ArrayList<Observer>();
 	
-	public Facade() {
-		one = new SubSystemOne();
-		two = new SubSystemTwo();
-		three = new SubSystemThree();
-		four = new SubSystemFour();
+	//add Observer
+	public void Attach(Observer observer) {
+		observers.add(observer);
 	}
 	
-	public void MethodA() {
-		one.MethodOne();
-		two.MethodTwo();
-		four.MethodFour();
+	//remove Observer
+	public void Detach(Observer observer) {
+		observers.remove(observer);
 	}
 	
-	public void MethodB() {
-		three.MethodThree();
-		four.MethodFour();
+	//notify
+	public void Notify() {
+		for(Observer observer : observers) {
+			observer.Update();
+		}
 	}
 }
 
-//子系统类
-class SubSystemOne {
-	public void MethodOne() {
-		System.out.println("子系统方法一");
-	}
-}
-class SubSystemTwo {
-	public void MethodTwo() {
-		System.out.println("子系统方法二");
-	}
-}
-class SubSystemThree {
-	public void MethodThree() {
-		System.out.println("子系统方法三");
-	}
-}
-class SubSystemFour {
-	public void MethodFour() {
-		System.out.println("子系统方法四");
-	}
+//Observer类
+abstract class Observer {
+	public abstract void Update();
 }
 
+class ConcreteSubject extends Subject {
+	private String subjectState;
+
+	public String getSubjectState() {
+		return subjectState;
+	}
+
+	public void setSubjectState(String subjectState) {
+		this.subjectState = subjectState;
+	}
+	
+}
+
+class ConcreteObserver extends Observer {
+	private String name;
+	private String observerState;
+	private ConcreteSubject subject;
+	
+	public ConcreteObserver(ConcreteSubject subject, String name) {
+		this.name = name;
+		this.subject = subject;
+	}
+	
+	@Override
+	public void Update() {
+		observerState = subject.getSubjectState();
+		System.out.println("观察者" + name + "的新状态是" + observerState);
+	}
+
+	public ConcreteSubject getSubject() {
+		return subject;
+	}
+
+	public void setSubject(ConcreteSubject subject) {
+		this.subject = subject;
+	}
+	
+	
+}
 
 								</code>
 							</pre>
@@ -182,32 +203,29 @@ class SubSystemFour {
 						<div id="StateUML" class="bs-callout bs-callout-danger">
 							<h2 >UML类图</h2>
 						</div>
-						<img src="img/FacadePattern/FacadePattern.cld.jpg" alt="状态模式UML类图" /><br />
+						<img src="img/ObserverPattern/ObserverPattern.cld.jpg" alt="状态模式UML类图" /><br />
 						
 						<div id="Condition" class="bs-callout bs-callout-danger">
 							<h2>应用场景</h2>
 						</div>
 						<p class="lead">
-							建议在如下情况中，选用外观模式：
+							建议在如下情况中，选用观察者模式：
 						</p>
 						<ul>
-							<li class="text-primary">如果你希望为一个复杂的子系统提供一个简单接口的时候，可以考虑使用外观模式，使用外观对象来实现大部分客户需要的功能，从而简化客户的使用</li><br />
-							<li class="text-primary">如果想要让客户程序和抽象类的实现部分松散耦合，可以考虑使用外观模式，使用外观对象来将这个子系统与它的客户分离开来，从而提高子系统的独立性和可移植性</li>
-							<li class="text-primary">如果构建多层结构的系统，可以考虑使用外观模式，使用外观对象作为每层的入口，这样可以简化层间调用，也可以松散层次之间的依赖关系</li>
+							<li class="text-primary">当一个抽象模型有两个方面，其中一个方面的操作依赖于另一个方面的状态变化，那么就可以选用观察者模式，将这两者封装成观察者和目标对象，当目标对象变化的时候，依赖于它的观察者对象也会发生相应的变化。这样就把抽象模型的这两个方面分离开了，使得它们可以独立的改变和复用。</li><br />
+							<li class="text-primary">如果在更改一个对象的时候，需要同时连带改变其它的对象，而且不知道究竟应该有多少对象需要被连带改变，这种情况可以选用观察者模式，被更改的那一个对象很明显就相当于是目标对象，而需要连带修改的多个其它对象，就作为多个观察者对象了。</li>
+							<li class="text-primary">当一个对象必须通知其它的对象，但是你又希望这个对象和其它被它通知的对象是松散耦合的，也就是说这个对象其实不想知道具体被通知的对象，这种情况可以选用观察者模式，这个对象就相当于是目标对象，而被它通知的对象就是观察者对象了。</li>
 						</ul>
 						<br />
 						
 						<div id="About" class="bs-callout bs-callout-danger">
 						<h2>相关模式</h2>
 						</div><br />
-						<h3>外观模式和中介者模式</h3><br />
-						<p>这两个模式非常类似，但是有本质的区别。
-						    中介者模式主要用来封装多个对象之间相互的交互，多用在系统内部的多个模块之间；而外观模式封装的是单向的交互，是从客户端访问系统的调用，没有从系统中来访问客户端的调用。
-						    在中介者模式的实现里面，是需要实现具体的交互功能的；而外观模式的实现里面，一般是组合调用或是转调内部实现的功能，通常外观模式本身并不实现这些功能。
-						    中介者模式的目的主要是松散多个模块之间的耦合，把这些耦合关系全部放到中介者中去实现；而外观模式的目的是简化客户端的调用，这点和中介者模式也不同。
+						<h3>观察者模式和状态模式</h3><br />
+						<p>观察者模式是当目标状态发生改变时，触发并通知观察者，让观察者去执行相应的操作。而状态模式是根据不同的状态，选择不同的实现，这个实现类的主要功能就是针对状态的相应的操作，它不像观察者，观察者本身还有很多其它的功能，接收通知并执行相应处理只是观察者的部分功能。
 						</p>
-						<h3>外观模式和单例模式</h3><br />
-						<p> 通常一个子系统只需要一个外观实例，所以外观模式可以和单例模式组合使用，把Facade类实现成为单例。当然，也可以跟前面示例的那样，把外观类的构造方法私有化，然后把提供给客户端的方法实现成为静态的。</p>
+						<h3>观察者模式和中介者模式</h3><br />
+						<p>观察者模式和中介者模式是可以结合使用的。</p>
 						<br />
 						
 						
@@ -218,23 +236,20 @@ class SubSystemFour {
 							<h4>优点：</h4>
 						</div>
 							<ul class="list">
-								<li class="lead">松散耦合</li>
-								<p> 外观模式松散了客户端与子系统的耦合关系，让子系统内部的模块能更容易扩展和维护。</p>
-								<li class="lead">简单易用</li>
-								<p> 外观模式让子系统更加易用，客户端不再需要了解子系统内部的实现，也不需要跟众多子系统内部的模块进行交互，只需要跟外观交互就可以了，相当于外观类为外部客户端使用子系统提供了一站式服务。</p>
-								<li class="lead">更好的划分访问层次</li>
-								<p> 通过合理使用Facade，可以帮助我们更好的划分访问的层次。有些方法是对系统外的，有些方法是系统内部使用的。把需要暴露给外部的功能集中到外观中，这样既方便客户端使用，也很好的隐藏了内部的细节。</p>
+								<li>观察者模式实现了观察者和目标之间的抽象耦合。</li>
+								<li>观察者模式实现了动态联动</li>
+								<li>观察者模式支持广播通信。被观察者会向所有的登记过的观察者发出通知。 </li>
 							</ul>
 						<div id="AandD" class="bs-callout bs-callout-warning">
 							<h4>缺点：</h4>
 						</div>
 							<ul class="list">
-								<p>过多的或者是不太合理的Facade也容易让人迷惑，到底是调用Facade好呢，还是直接调用模块好。</p>
+								<p>可能会引起无谓的操作。</p>
 							</ul>
 						<div id="Nature" class="bs-callout bs-callout-danger">
 							<h2 >本质</h2>
 						</div>
-						<p class="lead">封装交互，简化调用。</p>
+						<p class="lead">触发联动</p>
 					</div>
 				</div>
 				<div class="col-md-2 ">

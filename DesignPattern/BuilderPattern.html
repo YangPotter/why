@@ -1,9 +1,328 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
-		<title></title>
+		<title>Design Pattern-Adapter</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
 	</head>
-	<body>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello, DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="400">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="SimpleFactoryPattern.htmlm">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="StrategyPattern.html">策略模式</a>
+							</li>
+							<li class="">
+								<a href="Principle.html">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="DecorationPattern.html">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="ProxyPattern.html">代理模式</a>
+							</li>
+							<li class="">
+								<a href="#factoryMethod">工厂方法模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+							</li>
+							<li class="">
+								<a href="TemplateMethod.html">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="#facade">外观模式</a>
+							</li>
+							<li class="">
+								<a href="#builder">建造者模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#Condition">应用场景</a>
+									</li>
+									<li>
+										<a href="#About">相关模式</a>
+									</li>
+									<li>
+										<a href="#AandD">优点与缺点</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="#observer">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="#abstractFactory">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="builder" class="page-header">建造者模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								建造者模式（Builder）将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示
+							</p>
+						</div><br />
+						<p>先把构建过程独立出来，在建造者模式中把它称为指导者，由他来指导装配过程，但不负责每步具体的实现。</p>
+						<p>要有能具体实现每步的对象，称之为建造者或者生成器</p><br />
+						<p><span class="text-primary">具体建造者（Concrete Builder）角色：</span>实现Builder角色提供的接口，一步一步完成创建产品实例的过程。 在建造过程完成后，提供产品的实例。</p>
+						<p><span class="text-primary">指导者（Director）角色：</span>主要用来使用Builder接口，以一个统一的过程来构建所需要的Product对象</p>
+						<p><span class="text-primary">产品（Product）角色：</span>产品便是建造中的复杂对象。</p>
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+//建造者模式
+package BuliderPattern;
+
+import java.util.*;
+
+public class BuilderPatternDemo {
+	//客户端，客户不需要知道具体的建造过程
+	public static void main(String[] args) {
+		Director director = new Director();
+		Builder b1 = new ConcreteBuilderA();
+		Builder b2 = new ConcreteBuilderB();
+		
+		director.Construct(b1);
+		Product p1 = b1.GetResult();
+		p1.Show();
+		
+		director.Construct(b2);
+		Product p2 = b2.GetResult();
+		p2.Show();
+	}
+
+}
+
+//产品类
+class Product {
+	List<String> parts = new ArrayList<String>();
+	
+	public void Add(String part) {    //添加产品类
+		parts.add(part);
+	}
+	
+	public void Show() {    //列举所有的产品部件
+		System.out.println("\n产品 创建");
+		for(String part : parts) {
+			System.out.println(part);
+		}
+	}
+}
+
+//Builder类
+abstract class Builder {
+	public abstract void BuildPartA();
+	public abstract void BuildPartB();
+	public abstract Product GetResult();
+}
+
+//具体Builder类
+class ConcreteBuilderA extends Builder {
+	private Product product = new Product();
+
+	@Override
+	public void BuildPartA() {
+		product.Add("部件A");
+	}
+
+	@Override
+	public void BuildPartB() {
+		product.Add("部件B");
+	}
+
+	@Override
+	public Product GetResult() {
+		return product;
+	}
+	
+}
+
+//具体Builder类
+class ConcreteBuilderB extends Builder {
+	private Product product = new Product();
+
+	@Override
+	public void BuildPartA() {
+		product.Add("部件A");
+	}
+
+	@Override
+	public void BuildPartB() {
+		product.Add("部件B");
+	}
+
+	@Override
+	public Product GetResult() {
+		return product;
+	}
+	
+}
+
+//Director指挥者类
+class Director {
+	public void Construct(Builder builder) {
+		builder.BuildPartA();    //指挥建造过程
+		builder.BuildPartB();
+	}
+}
+
+
+								</code>
+							</pre>
+						</figure>
+
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						<img src="img/BuilderPattern/BuilderPattern.cld.jpg" alt="状态模式UML类图" /><br />
+						
+						<div id="Condition" class="bs-callout bs-callout-danger">
+							<h2>应用场景</h2>
+						</div>
+						<p class="lead">
+							建议在如下情况中，选用建造者模式：
+						</p>
+						<ul>
+							<li class="text-primary">需要生成的产品对象有复杂的内部结构。 </li><br />
+							<li class="text-primary">需要生成的产品对象的属性相互依赖，建造者模式可以强迫生成顺序。  </li>
+							<li class="text-primary"> 在对象创建过程中会使用到系统中的一些其它对象，这些对象在产品对象的创建过程中不易得到。</li>
+						</ul>
+						<br />
+						
+						<div id="About" class="bs-callout bs-callout-danger">
+						<h2>相关模式</h2>
+						</div><br />
+						<h3>生成器模式和工厂方法模式</h3><br />
+						<p>这两个模式可以组合使用。 生成器模式的Builder实现中，通常需要选择具体的部件实现，一个可行的方案就是实现成为工厂方法，通过工厂方法来获取具体的部件对象，然后再进行部件的装配。</p>
+						<h3>生成器模式和组合模式</h3><br />
+						<p>这两个模式可以组合使用。对于复杂的组合结构，可以使用生成器模式来一步一步构建。</p>
+						<br />
+						
+						
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2 >优点与缺点</h2>
+						</div>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="lead">松散耦合</li>
+								<p>生成器模式可以用同一个构建算法，构建出表现上完全不同的产品，实现产品构建和产品表现上的分离。生成器模式正是把产品构建的过程独立出来，使它和具体产品的表现松散耦合，从而使得构建算法可以复用，而具体产品表现也可以灵活的、方便的扩展和切换。</p>
+								<li class="lead">可以很容易的改变产品的内部表示</li>
+								<p>在生成器模式中，由于Builder对象只是提供接口给Director使用，那么具体的部件创建和装配方式是被Builder接口隐藏了的，Director并不知道这些具体的实现细节。这样一来，要想改变产品的内部表示，只需要切换Builder的具体实现即可，不用管Director，因此变得很容易。</p>
+								<li class="lead">更好的复用性</li>
+								<p>生成器模式很好的实现了构建算法和具体产品实现的分离，这样一来，使得构建产品的算法可以复用。同样的道理，具体产品的实现也可以复用，同一个产品的实现，可以配合不同的构建算法使用。</p>
+							</ul>
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2 >本质</h2>
+						</div>
+						<p class="lead">分离整体构建算法和部件构造</p>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="MementoPattern.html">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
 	</body>
+
 </html>
