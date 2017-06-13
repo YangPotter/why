@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>Design Pattern-Singleton</title>
+		<title>Design Pattern-Command</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
 		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
@@ -71,12 +71,15 @@
 				<div class="col-md-8 ">
 
 					<div class="bs-docs-section">
-						<h1 id="singleton" class="page-header">单例模式</h1>
+						<h1 id="command" class="page-header">命令模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								单例模式（Singleton），保证一个类只有一个实例，并提供一个访问它的全局访问点。
+								命令模式（Command），将一个请求封装为一个对象，从而使你可用不同的请求对客户进行参数化，对请求排队或记录请求日志，以及支持可撤销的操作。
 							</p>
 						</div><br />
+						<p><span class="text-primary">抽象构件（Component）角色：</span>这是一个抽象角色，它给参与组合的对象规定一个接口。这个角色给出共有接口及其默认行为。</p>
+						<p><span class="text-primary">树叶构件（Leaf）角色：</span>代表参加组合的树叶对象。一个树叶对象没有下级子对象。 </p>
+						<p><span class="text-primary">树枝构件（Composite）角色：</span>代表参加组合的有子对象的对象，并给出树枝构件对象的行为。 </p>
 						<div id="StateDemo" class="bs-callout bs-callout-danger">
 							<h2 >模版</h2>
 						</div>
@@ -85,34 +88,66 @@
 							<pre>
 								<code>
 
-package SingletonPattern;
+package CommandPattern;
 
-public class SingletonDemo {
-	public static void main(String args[]) {
-		Singleton s1 = Singleton.GetInstance();
-		Singleton s2 = Singleton.GetInstance();
+//客户端
+public class CommandDemo {
+
+	public static void main(String[] args) {
+		Receiver r = new Receiver();
+		Command c = new ConcreteCommand(r);
+		Invoker i = new Invoker();
 		
-		if(s1 == s2) {
-			System.out.println("两个对象是相同的实例");
-		}
+		i.setCommand(c);
+		i.ExecuteCommand();
+	}
+
+}
+
+//Command类，用来声明执行操作的接口。
+abstract class Command {
+	protected Receiver receiver;
+	
+	public Command(Receiver receiver) {
+		this.receiver = receiver;
+	}
+	
+	abstract public void Execute();
+}
+
+//ConcreteCommmand类
+class ConcreteCommand extends Command {
+	public ConcreteCommand(Receiver receiver) {
+		super(receiver);
+	}
+	
+	public void Execute() {
+		receiver.Action();
 	}
 }
 
-//Singleton类
-class Singleton {
-	private static Singleton instance;
-	
-	private Singleton() {    //构造方法，让其private，堵死外界利用new创建此类实例可能
-		
+//Invoker类
+class Invoker {
+	private Command command;
+
+	public void setCommand(Command command) {
+		this.command = command;
 	}
 	
-	public static Singleton GetInstance() {
-		if(instance == null) {    //若类不存在，new新实例，否则返回已有实例
-			instance = new Singleton();
-		}
-		return instance;
+	public void ExecuteCommand() {
+		command.Execute();
 	}
+	
 }
+
+//Receiver类
+class Receiver {
+	public void Action() {
+		System.out.println("执行请求！");
+	}
+	
+}
+
 	
 
 								</code>
@@ -122,43 +157,52 @@ class Singleton {
 						<div id="StateUML" class="bs-callout bs-callout-danger">
 							<h2 >UML类图</h2>
 						</div>
-						<img src="img/Singleton/Singleton.cld.jpg" alt="状态模式UML类图" /><br />
+						<img src="img/CommandPattern/Command.cld.jpg" alt="状态模式UML类图" /><br />
 						
 						<div id="Condition" class="bs-callout bs-callout-danger">
 							<h2>应用场景</h2>
 						</div>
 						<p class="lead">
-							建议在如下情况中，选用单例模式：
+							建议在如下情况中，选用命令模式：
 						</p>
 						<ul>
-							<li class="text-primary">在一个系统要求一个类只有一个实例时才应当使用单例模式。</li><br />
-							<li class="text-primary">反过来，如果一个类可以有几个实例共存，就不要使用单例模式。</li>
+							<li class="text-primary">需求中是体现部分与整体层次的结构时</li><br />
+							<li class="text-primary">希望用户忽略组合对象与单个对象的不同，统一的使用组合结构中的所有对象时</li>
 						</ul>
 						<br />
 						
 						<div id="About" class="bs-callout bs-callout-danger">
-						<h2>分类</h2>
+						<h2>相关模式</h2>
 						</div><br />
-						<p class="lead">
-							单例模式的实现又分为两种：
-						</p>
-						<ul>
-							<li class="text-primary">懒汉式单例模式（时间换空间）</li><br />
-							<li class="text-primary">饿汉式单例模式（空间换时间）</li>
-						</ul><br />
+						<h3>组合模式与迭代器模式</h3><br />
+   						<p>这两个模式可以组合使用，在组合模式中，通常可以使用迭代器模式来遍历组合对象的子对象集合，而无需关心具体存放子对象的聚合结构</p>
+						<br />
 						
 						<div id="AandD" class="bs-callout bs-callout-danger">
-							<h2 >特点</h2>
+							<h2 >优点与缺点</h2>
 						</div>
-						<ul class="list">
-							<li class="lead">单例类只能有一个实例。</li>
-							<li class="lead">单例类必须自己创建自己的唯一实例。</li>
-							<li class="lead">单例类必须给所有其它对象提供这一实例。</li>
-						</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="lead">统一了组合对象和叶子对象</li>
+								<li class="lead">简化了客户端调用</li>
+								<p>不用区分组合对象和叶子对象</p>
+								<li class="lead">更容易扩展</li>
+								<p>由于客户端是统一的面对Component来操作，因此，新定义的Composite或leaf子类能够很容易的与已有的结构一起工作，而不需改变客户端</p>
+								
+							</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>缺点：</h4>
+						</div>
+							<ul class="list">
+								<li>很难限制组合中的组件类型</li>
+								<p>这是容易添加新的组件带来的问题，在需要检测组件类型的时候，使得我们不能依靠编译期的类型约束来完成，必须在运行期间动态检测</p>
+							</ul>
 						<div id="Nature" class="bs-callout bs-callout-danger">
 							<h2 >本质</h2>
 						</div>
-						<p class="lead">控制实例数目</p>
+						<p class="lead">统一叶子对象和组合对象</p>
 					</div>
 				</div>
 				<div class="col-md-2 ">
@@ -174,10 +218,16 @@ class Singleton {
 								<a href="MementoPattern.html">备忘录模式</a>
 							</li>
 							<li class="">
-								<a href="Composite.html">组合模式</a>
+								<a href="#composite">组合模式</a>
 							</li>
 							<li class="">
-								<a href="#singleton">单例模式</a>
+								<a href="Singleton.html">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
 								<ul class="nav">
 									<li>
 										<a href="#StateDemo">模版</a>
@@ -189,21 +239,15 @@ class Singleton {
 										<a href="#Condition">应用场景</a>
 									</li>
 									<li>
-										<a href="#About">分类</a>
+										<a href="#About">相关模式</a>
 									</li>
 									<li>
-										<a href="#AandD">特点</a>
+										<a href="#AandD">优点与缺点</a>
 									</li>
 									<li>
 										<a href="#Nature">本质</a>
 									</li>
 								</ul>
-							</li>
-							<li class="">
-								<a href="#bridge">桥接模式</a>
-							</li>
-							<li class="">
-								<a href="#command">命令模式</a>
 							</li>
 							<li class="">
 								<a href="#responsibility">职责链模式</a>

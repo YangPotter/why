@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>Design Pattern-Singleton</title>
+		<title>Design Pattern-ChainOfResponsibility</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
 		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
@@ -71,12 +71,14 @@
 				<div class="col-md-8 ">
 
 					<div class="bs-docs-section">
-						<h1 id="singleton" class="page-header">单例模式</h1>
+						<h1 id="responsibility" class="page-header">职责链模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								单例模式（Singleton），保证一个类只有一个实例，并提供一个访问它的全局访问点。
+								职责链模式（Chain Of Responsibility），使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这个对象连成一条链，并沿着这条链传递该请求，直到有一个对象处理它为止。
 							</p>
 						</div><br />
+						<p><span class="text-primary">抽象处理者(Handler)角色：</span>定义出一个处理请求的接口。如果需要，接口可以定义出一个方法，以设定和返回对下家的引用。这个角色通常由一个抽象类或接口实现。</p>
+						<p><span class="text-primary">具体处理者(ConcreteHandler)角色：</span>具体处理者接到请求后，可以选择将请求处理掉，或者将请求传给下家。由于具体处理者持有对下家的引用，因此，如果需要，具体处理者可以访问下家。</p>
 						<div id="StateDemo" class="bs-callout bs-callout-danger">
 							<h2 >模版</h2>
 						</div>
@@ -85,34 +87,75 @@
 							<pre>
 								<code>
 
-package SingletonPattern;
+//职责链模式
+package ChianOfResponsibility;
 
-public class SingletonDemo {
-	public static void main(String args[]) {
-		Singleton s1 = Singleton.GetInstance();
-		Singleton s2 = Singleton.GetInstance();
+public class ChainOfResponsibilityDemo {
+	public static void mian(String args[]) {
+		Handler h1 = new ConcreteHandler1();
+		Handler h2 = new ConcreteHandler2();
+		Handler h3 = new ConcreteHandler3();
 		
-		if(s1 == s2) {
-			System.out.println("两个对象是相同的实例");
+		h1.SetSuccessor(h2);
+		h2.SetSuccessor(h3);
+		
+		int [] requests = {2, 5, 14, 22, 18, 3, 27, 20};
+		
+		for(int request : requests) {
+			h1.HandleRequest(request);
 		}
 	}
 }
 
-//Singleton类
-class Singleton {
-	private static Singleton instance;
+//Handler类
+abstract class Handler {
+	protected Handler successor;
 	
-	private Singleton() {    //构造方法，让其private，堵死外界利用new创建此类实例可能
-		
+	public void SetSuccessor(Handler successor) {
+		this.successor = successor;
 	}
 	
-	public static Singleton GetInstance() {
-		if(instance == null) {    //若类不存在，new新实例，否则返回已有实例
-			instance = new Singleton();
-		}
-		return instance;
-	}
+	public abstract void HandleRequest(int request);
 }
+
+//ConcreteHandler类
+class ConcreteHandler1 extends Handler {
+
+	@Override
+	public void HandleRequest(int request) {
+		if(request >= 0 && request < 0) {
+			System.out.println(request + "处理请求");
+		}else if(successor != null) {
+			successor.HandleRequest(request);
+		}
+	} 
+}
+
+class ConcreteHandler2 extends Handler {
+
+	@Override
+	public void HandleRequest(int request) {
+		if(request >= 10 && request < 20) {
+			System.out.println(request + "处理请求");
+		}else if(successor != null) {
+			successor.HandleRequest(request);
+		}
+	} 
+}
+
+class ConcreteHandler3 extends Handler {
+
+	@Override
+	public void HandleRequest(int request) {
+		if(request >= 20 && request < 30) {
+			System.out.println(request + "处理请求");
+		}else if(successor != null) {
+			successor.HandleRequest(request);
+		}
+	} 
+}
+
+
 	
 
 								</code>
@@ -122,43 +165,30 @@ class Singleton {
 						<div id="StateUML" class="bs-callout bs-callout-danger">
 							<h2 >UML类图</h2>
 						</div>
-						<img src="img/Singleton/Singleton.cld.jpg" alt="状态模式UML类图" /><br />
-						
-						<div id="Condition" class="bs-callout bs-callout-danger">
-							<h2>应用场景</h2>
-						</div>
-						<p class="lead">
-							建议在如下情况中，选用单例模式：
-						</p>
-						<ul>
-							<li class="text-primary">在一个系统要求一个类只有一个实例时才应当使用单例模式。</li><br />
-							<li class="text-primary">反过来，如果一个类可以有几个实例共存，就不要使用单例模式。</li>
-						</ul>
-						<br />
-						
-						<div id="About" class="bs-callout bs-callout-danger">
-						<h2>分类</h2>
-						</div><br />
-						<p class="lead">
-							单例模式的实现又分为两种：
-						</p>
-						<ul>
-							<li class="text-primary">懒汉式单例模式（时间换空间）</li><br />
-							<li class="text-primary">饿汉式单例模式（空间换时间）</li>
-						</ul><br />
+						<img src="img/ChainOfResponsibility/ChainOfResponsibility.cld.jpg" alt="状态模式UML类图" /><br />
 						
 						<div id="AandD" class="bs-callout bs-callout-danger">
-							<h2 >特点</h2>
+							<h2 >优点与缺点</h2>
 						</div>
-						<ul class="list">
-							<li class="lead">单例类只能有一个实例。</li>
-							<li class="lead">单例类必须自己创建自己的唯一实例。</li>
-							<li class="lead">单例类必须给所有其它对象提供这一实例。</li>
-						</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="lead">请求者和接收者松散耦合</li>
+								<li class="lead">动态组合职责</li>
+							</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>缺点：</h4>
+						</div>
+							<ul class="list">
+								<li>产生很多细粒度对象</li>
+								<li>不一定能被处理</li>
+								<li>需要提供默认处理</li>
+							</ul>
 						<div id="Nature" class="bs-callout bs-callout-danger">
 							<h2 >本质</h2>
 						</div>
-						<p class="lead">控制实例数目</p>
+						<p class="lead">分离职责，动态组合</p>
 					</div>
 				</div>
 				<div class="col-md-2 ">
@@ -177,7 +207,16 @@ class Singleton {
 								<a href="Composite.html">组合模式</a>
 							</li>
 							<li class="">
-								<a href="#singleton">单例模式</a>
+								<a href="Singleton.html">单例模式</a>
+							</li>
+							<li class="">
+								<a href="BridgePattern.html">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="CommandPattern.html">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
 								<ul class="nav">
 									<li>
 										<a href="#StateDemo">模版</a>
@@ -186,27 +225,12 @@ class Singleton {
 										<a href="#StateUML">类图</a>
 									</li>
 									<li>
-										<a href="#Condition">应用场景</a>
-									</li>
-									<li>
-										<a href="#About">分类</a>
-									</li>
-									<li>
-										<a href="#AandD">特点</a>
+										<a href="#AandD">优点与缺点</a>
 									</li>
 									<li>
 										<a href="#Nature">本质</a>
 									</li>
 								</ul>
-							</li>
-							<li class="">
-								<a href="#bridge">桥接模式</a>
-							</li>
-							<li class="">
-								<a href="#command">命令模式</a>
-							</li>
-							<li class="">
-								<a href="#responsibility">职责链模式</a>
 							</li>
 							<li class="">
 								<a href="#mediator">中介者模式</a>

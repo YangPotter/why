@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>Design Pattern-Composite</title>
+		<title>Design Pattern-Visitor</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
 		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
@@ -71,15 +71,13 @@
 				<div class="col-md-8 ">
 
 					<div class="bs-docs-section">
-						<h1 id="composite" class="page-header">组合模式</h1>
+						<h1 id="visitor" class="page-header">访问者模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								组合模式（Composite），对象组织到树结构中，可以用来描述整体与部分的关系。组合模式可以使客户端将单纯元素与复合元素同等看待。
+								访问者模式（Visitor），表示一个作用于某个对象结构中的各元素的操作。它使你可以在不改变各元素的类的前提下定义作用于这些元素的新操作。
 							</p>
 						</div><br />
-						<p><span class="text-primary">抽象构件（Component）角色：</span>这是一个抽象角色，它给参与组合的对象规定一个接口。这个角色给出共有接口及其默认行为。</p>
-						<p><span class="text-primary">树叶构件（Leaf）角色：</span>代表参加组合的树叶对象。一个树叶对象没有下级子对象。 </p>
-						<p><span class="text-primary">树枝构件（Composite）角色：</span>代表参加组合的有子对象的对象，并给出树枝构件对象的行为。 </p>
+						<p>访问者模式的目的是封装一些施加于某种数据结构元素之上的操作。一旦这些操作需要修改的话，接受这个操作的数据结构则可以保持不变。</p>
 						<div id="StateDemo" class="bs-callout bs-callout-danger">
 							<h2 >模版</h2>
 						</div>
@@ -88,112 +86,105 @@
 							<pre>
 								<code>
 
-package CompositePattern;
+package VisitorPattern;
 
 import java.util.*;
 
-//组合模式，客户端
-public class ConpositeDemo {
-	public static void main(String args[]) {
-		Composite root = new Composite("root");
+public class VisitorDemo {
+
+	public static void main(String[] args) {
+		ObjectStructure o = new ObjectStructure();
+		o.Attach(new ConcreteElementA());
+		o.Attach(new ConcreteElementB());
 		
-		root.Add(new Leaf("Leaf A"));
-		root.Add(new Leaf("Leaf B"));
+		ConcreteVisitor1 v1 = new ConcreteVisitor1();
+		ConcreteVisitor2 v2 = new ConcreteVisitor2();
 		
-		Composite comp = new Composite("Composite X");
-		comp.Add(new Leaf("Leaf XA"));
-		comp.Add(new Leaf("Leaf XB"));
-		
-		root.Add(comp);
-		
-		Composite comp2 = new Composite("Composite XY");
-		comp2.Add(new Leaf("Leaf XYA"));
-		comp2.Add(new Leaf("Leaf XYB"));
-		
-		comp.Add(comp2);
-		
-		root.Add(new Leaf("Leaf C"));
-		
-		Leaf leaf = new Leaf("Leaf D");
-		root.Add(leaf);
-		root.Remove(leaf);
-		
-		root.Display(1);
-		
+		o.Accept(v1);
+		o.Accept(v2);
 	}
 }
 
-//Component类
-abstract class Component {
-	protected String name;
-	
-	public Component(String name) {
-		this.name = name;
-	}
-	
-	public abstract void Add(Component c);
-	public abstract void Remove(Component c);
-	public abstract void Display(int depth);
+//Visitor类,声明Visit操作
+abstract class Visitor {
+	public abstract void VisitConcreteElementA(ConcreteElementA concreteElementA);
+	public abstract void VisitConcreteElementB(ConcreteElementB concreteElementB);
 }
 
-//Leaf类
-class Leaf extends Component {
+//ConcreteVisitor,具体访问者，实现有Visitor声明的操作
+class ConcreteVisitor1 extends Visitor {
 
-	public Leaf(String name) {
-		super(name);
+	@Override
+	public void VisitConcreteElementA(ConcreteElementA concreteElementA) {
+		System.out.println(concreteElementA.getClass().getName() + "被" + this.getClass().getName());
 	}
 
 	@Override
-	public void Add(Component c) {
-		System.out.println("Cannot add to a leaf");
+	public void VisitConcreteElementB(ConcreteElementB concreteElementB) {
+		System.out.println(concreteElementB.getClass().getName() + "被" + this.getClass().getName());
 	}
-
-	@Override
-	public void Remove(Component c) {
-		System.out.println("Cannot remove from a leaf");
-	}
-
-	@Override
-	public void Display(int depth) {
-		for(int i = 0; i < depth; i++) {
-			System.out.print("-");
-		}
-		System.out.println(name);
-	}
-	
 	
 }
 
-//Composite类
-class Composite extends Component {
-	private List<Component> children = new ArrayList<Component>();
+class ConcreteVisitor2 extends Visitor {
 
-	public Composite(String name) {
-		super(name);
+	@Override
+	public void VisitConcreteElementA(ConcreteElementA concreteElementA) {
+		System.out.println(concreteElementA.getClass().getName() + "被" + this.getClass().getName());
+	}
+
+	@Override
+	public void VisitConcreteElementB(ConcreteElementB concreteElementB) {
+		System.out.println(concreteElementB.getClass().getName() + "被" + this.getClass().getName());
 	}
 	
-	@Override
-	public void Add(Component c) {
-		children.add(c);
-	}
+}
+
+abstract class Element {
+	public abstract void Accept(Visitor visitor);
+}
+
+class ConcreteElementA extends Element {
 
 	@Override
-	public void Remove(Component c) {
-		children.remove(c);
+	public void Accept(Visitor visitor) {
+		visitor.VisitConcreteElementA(this);
 	}
+	
+	public void OperationA(){}
+	
+}
+
+class ConcreteElementB extends Element {
 
 	@Override
-	public void Display(int depth) {
-		for(int i = 0; i < depth; i++) {
-			System.out.print("-");
-		}
-		System.out.println(name);
-		
-		for(Component component:children) {
-			component.Display(depth + 2);
+	public void Accept(Visitor visitor) {
+		visitor.VisitConcreteElementB(this);
+	}
+	
+	public void OperationA(){}
+	
+}
+
+class ObjectStructure {
+	private List<Element> elements = new ArrayList<Element>();
+	
+	public void Attach(Element element) {
+		elements.add(element);
+	}
+	
+	public void Detach(Element element) {
+		elements.remove(element);
+	}
+	
+	public void Accept(Visitor visitor) {
+		for(Element e : elements) {
+			e.Accept(visitor);
 		}
 	}
 }
+
+
 	
 
 								</code>
@@ -203,26 +194,22 @@ class Composite extends Component {
 						<div id="StateUML" class="bs-callout bs-callout-danger">
 							<h2 >UML类图</h2>
 						</div>
-						<img src="img/CompositePattern/CompositePattern.cld.jpg" alt="状态模式UML类图" /><br />
+						<img src="img/VisitorPattern/VisitorPattern.cld.jpg" alt="状态模式UML类图" /><br />
 						
 						<div id="Condition" class="bs-callout bs-callout-danger">
 							<h2>应用场景</h2>
 						</div>
 						<p class="lead">
-							建议在如下情况中，选用组合模式：
+							建议在如下情况中，选用访问者模式：
 						</p>
 						<ul>
-							<li class="text-primary">需求中是体现部分与整体层次的结构时</li><br />
-							<li class="text-primary">希望用户忽略组合对象与单个对象的不同，统一的使用组合结构中的所有对象时</li>
+							<li class="lead">访问者模式的目的是要把处理从数据结构分离出来</li>
+							<li class="text-primary lead">访问者模式仅应当在被访问的类结构非常稳定的情况下使用 </li><br />
+							<p>换言之，系统很少出现需要加入新节点的情况。如果出现需要加入新节点的情况，那么就必须在每一个访问对象里加入一个对应于这个新节点的访问操作，而这是对一个系统的大规模修改，因而是违背“开一闭”原则的。</p>
+							<li class="lead">访问者模式提供了倾斜的可扩展性设计：方法集合的可扩展性和类集合的不可扩展性。换言之，如果系统的数据结构是频繁变化的，则不适合使用访问者模式。</li>
 						</ul>
 						<br />
 						
-						<div id="About" class="bs-callout bs-callout-danger">
-						<h2>相关模式</h2>
-						</div><br />
-						<h3>组合模式与迭代器模式</h3><br />
-   						<p>这两个模式可以组合使用，在组合模式中，通常可以使用迭代器模式来遍历组合对象的子对象集合，而无需关心具体存放子对象的聚合结构</p>
-						<br />
 						
 						<div id="AandD" class="bs-callout bs-callout-danger">
 							<h2 >优点与缺点</h2>
@@ -231,24 +218,20 @@ class Composite extends Component {
 							<h4>优点：</h4>
 						</div>
 							<ul class="list">
-								<li class="lead">统一了组合对象和叶子对象</li>
-								<li class="lead">简化了客户端调用</li>
-								<p>不用区分组合对象和叶子对象</p>
-								<li class="lead">更容易扩展</li>
-								<p>由于客户端是统一的面对Component来操作，因此，新定义的Composite或leaf子类能够很容易的与已有的结构一起工作，而不需改变客户端</p>
-								
+								<li class="lead">访问者模式使得增加新的操作变得很容易。增加新的操作就意味着增加一个新的访问者类。</li>
+								<li class="lead">访问者模式将有关的行为集中到一个访问者对象中，而不是分散到一个个的节点类中。</li>
 							</ul>
 						<div id="AandD" class="bs-callout bs-callout-warning">
 							<h4>缺点：</h4>
 						</div>
 							<ul class="list">
-								<li>很难限制组合中的组件类型</li>
-								<p>这是容易添加新的组件带来的问题，在需要检测组件类型的时候，使得我们不能依靠编译期的类型约束来完成，必须在运行期间动态检测</p>
+								<li class="lead">增加新的节点类变得很困难。每增加一个新的节点都意味着要在抽象访问者角色中增加一个新的抽象操作，并在每一个具体访问者类中增加相应的具体操作。 </li>
+								<li class="lead">破坏封装。访问者模式要求访问者对象访问并调用每一个节点对象的操作，这隐含了一个对所有节点对象的要求：它们必须暴露一些自己的操作和内部状态。</li>	
 							</ul>
 						<div id="Nature" class="bs-callout bs-callout-danger">
 							<h2 >本质</h2>
 						</div>
-						<p class="lead">统一叶子对象和组合对象</p>
+						<p class="lead">预留通路，回调实现</p>
 					</div>
 				</div>
 				<div class="col-md-2 ">
@@ -264,7 +247,32 @@ class Composite extends Component {
 								<a href="MementoPattern.html">备忘录模式</a>
 							</li>
 							<li class="">
-								<a href="#composite">组合模式</a>
+								<a href="Composite.html">组合模式</a>
+							</li>
+							<li class="">
+								<a href="Singleton.html">单例模式</a>
+							</li>
+							<li class="">
+								<a href="BridgePattern.html">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="CommandPattern.html">命令模式</a>
+							</li>
+							<li class="">
+								<a href="ChainOfResponsibility.html">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="Mediator.html">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="FlyweightPattern.html">享元模式</a>
+								
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
 								<ul class="nav">
 									<li>
 										<a href="#StateDemo">模版</a>
@@ -276,39 +284,12 @@ class Composite extends Component {
 										<a href="#Condition">应用场景</a>
 									</li>
 									<li>
-										<a href="#About">相关模式</a>
-									</li>
-									<li>
 										<a href="#AandD">优点与缺点</a>
 									</li>
 									<li>
 										<a href="#Nature">本质</a>
 									</li>
 								</ul>
-							</li>
-							<li class="">
-								<a href="Singleton.html">单例模式</a>
-							</li>
-							<li class="">
-								<a href="#bridge">桥接模式</a>
-							</li>
-							<li class="">
-								<a href="#command">命令模式</a>
-							</li>
-							<li class="">
-								<a href="#responsibility">职责链模式</a>
-							</li>
-							<li class="">
-								<a href="#mediator">中介者模式</a>
-							</li>
-							<li class="">
-								<a href="#flyweight">享元模式</a>
-							</li>
-							<li class="">
-								<a href="#interpreter">解释器模式</a>
-							</li>
-							<li class="">
-								<a href="#visitor">访问者模式</a>
 							</li>
 							<li class="">
 								<a href="#summary">模式总结</a>

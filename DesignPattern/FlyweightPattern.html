@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>Design Pattern-Singleton</title>
+		<title>Design Pattern-Flyweight</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
 		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
@@ -71,12 +71,14 @@
 				<div class="col-md-8 ">
 
 					<div class="bs-docs-section">
-						<h1 id="singleton" class="page-header">单例模式</h1>
+						<h1 id="flyweight" class="page-header">享元模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								单例模式（Singleton），保证一个类只有一个实例，并提供一个访问它的全局访问点。
+								享元模式（Flyweight），以共享的方式高效地支持大量的细粒度对象 。
 							</p>
 						</div><br />
+						<p>享元对象能做到共享的关键是区分内部状态（Internal State）和外部状态（External State）。内部状态是存储在享元对象内部并且不会随环境改变而改变。因此内部状态可以共享。</p>
+						<p>外部状态是随环境改变而改变的、不可以共享的状态。享元对象的外部状态必须由客户端保存，并在享元对象被创建之后，在需要使用的时候再传入到享元对象内部。外部状态与内部状态是相互独立的。   </p>
 						<div id="StateDemo" class="bs-callout bs-callout-danger">
 							<h2 >模版</h2>
 						</div>
@@ -85,34 +87,66 @@
 							<pre>
 								<code>
 
-package SingletonPattern;
+package FlyweightPattern;
 
-public class SingletonDemo {
+import java.util.Hashtable;
+
+public class FlyweightDemo {
 	public static void main(String args[]) {
-		Singleton s1 = Singleton.GetInstance();
-		Singleton s2 = Singleton.GetInstance();
+		int extrinsicstate = 22;
 		
-		if(s1 == s2) {
-			System.out.println("两个对象是相同的实例");
-		}
+		FlyweightFactory f = new FlyweightFactory();
+		
+		Flyweight fx = f.GetFlyweight("X");
+		fx.Operation(--extrinsicstate);
+		
+		Flyweight fy = f.GetFlyweight("Y");
+		fx.Operation(--extrinsicstate);
+		
+		Flyweight fz = f.GetFlyweight("Z");
+		fx.Operation(--extrinsicstate);
+		
+		Flyweight uf = new UnsharedConcreteFlyweight();
 	}
 }
 
-//Singleton类
-class Singleton {
-	private static Singleton instance;
-	
-	private Singleton() {    //构造方法，让其private，堵死外界利用new创建此类实例可能
-		
-	}
-	
-	public static Singleton GetInstance() {
-		if(instance == null) {    //若类不存在，new新实例，否则返回已有实例
-			instance = new Singleton();
-		}
-		return instance;
+//Flyweight类
+abstract class Flyweight {
+	public abstract void Operation(int extrinsicstate);
+}
+
+//ConcreteFlyweight类
+class ConcreteFlyweight extends Flyweight {
+	public void Operation(int extrisicstate) {
+		System.out.println("具体Flyweight:" + extrisicstate);
 	}
 }
+
+//UnsharedConcreteFlyweight指不需要共享的类，Flyweight接口共享成为可能，但它并不强制共享。
+class UnsharedConcreteFlyweight extends Flyweight {
+
+	@Override
+	public void Operation(int extrinsicstate) {
+		System.out.println("不共享的具体Flyweight:" + extrinsicstate);
+	}
+	
+}
+
+class FlyweightFactory {
+	private Hashtable flyweights = new Hashtable();
+	
+	public FlyweightFactory() {
+		flyweights.put("X", new ConcreteFlyweight());
+		flyweights.put("Y", new ConcreteFlyweight());
+		flyweights.put("Z", new ConcreteFlyweight());
+	}
+	
+	public Flyweight GetFlyweight(String key) {
+		return ((Flyweight)flyweights.get(key));
+	}
+}
+
+
 	
 
 								</code>
@@ -122,43 +156,53 @@ class Singleton {
 						<div id="StateUML" class="bs-callout bs-callout-danger">
 							<h2 >UML类图</h2>
 						</div>
-						<img src="img/Singleton/Singleton.cld.jpg" alt="状态模式UML类图" /><br />
+						<img src="img/FlyweightPattern/FlyweightPattern.cld.jpg" alt="状态模式UML类图" /><br />
 						
 						<div id="Condition" class="bs-callout bs-callout-danger">
 							<h2>应用场景</h2>
 						</div>
 						<p class="lead">
-							建议在如下情况中，选用单例模式：
+							建议在如下情况中，选用享元模式：
 						</p>
 						<ul>
-							<li class="text-primary">在一个系统要求一个类只有一个实例时才应当使用单例模式。</li><br />
-							<li class="text-primary">反过来，如果一个类可以有几个实例共存，就不要使用单例模式。</li>
+							<li class="text-primary">一个系统有大量的对象。</li><br />
+							<li class="text-primary">这些对象耗费大量的内存。</li>
+							<li class="text-primary">这些对象的状态中的大部分都可以外部化。 </li>
+							<li class="text-primary">这些对象可以按照内部状态分成很多的组，当把外部对象从对象中剔除时，每一个组都可以仅用一个对象代替。</li>
+							<li class="text-primary">使用享元模式需要维护一个记录了系统已有的所有享元的表，而这需要耗费资源。因此，应当在有足够多的享元实例可供共享时才值得使用享元模式。 </li>
 						</ul>
 						<br />
 						
 						<div id="About" class="bs-callout bs-callout-danger">
-						<h2>分类</h2>
+						<h2>相关模式</h2>
 						</div><br />
-						<p class="lead">
-							单例模式的实现又分为两种：
-						</p>
-						<ul>
-							<li class="text-primary">懒汉式单例模式（时间换空间）</li><br />
-							<li class="text-primary">饿汉式单例模式（空间换时间）</li>
-						</ul><br />
+						<h3>享元模式与单例模式</h3><br />
+   						<p>通常情况下，享元模式中的享元工厂可以实现成为单例。</p>
+						<br />
+						<h3>享元模式与组合模式</h3><br />
+   						<p>在享元模式中，存在不需要共享的享元实现，这些不需要共享的享元通常是对共享的享元对象的组合对象。也就是说，享元模式通常会和组合模式组合使用，来实现更复杂的对象层次</p>
+						<br />
 						
 						<div id="AandD" class="bs-callout bs-callout-danger">
-							<h2 >特点</h2>
+							<h2 >优点与缺点</h2>
 						</div>
-						<ul class="list">
-							<li class="lead">单例类只能有一个实例。</li>
-							<li class="lead">单例类必须自己创建自己的唯一实例。</li>
-							<li class="lead">单例类必须给所有其它对象提供这一实例。</li>
-						</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="lead">大幅度地降低内存中对象的数量 ，节省内存空间。</li>
+							</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>缺点：</h4>
+						</div>
+							<ul class="list">
+								<li class="lead">享元模式使得系统更加复杂。为了使对象可以共享，需要将一些状态外部化，这使得程序的逻辑复杂化。 </li>
+								<li class="lead">享元模式将享元对象的状态外部化，而读取外部状态使得运行时间变长。</li>	
+							</ul>
 						<div id="Nature" class="bs-callout bs-callout-danger">
 							<h2 >本质</h2>
 						</div>
-						<p class="lead">控制实例数目</p>
+						<p class="lead">分离与共享</p>
 					</div>
 				</div>
 				<div class="col-md-2 ">
@@ -177,7 +221,22 @@ class Singleton {
 								<a href="Composite.html">组合模式</a>
 							</li>
 							<li class="">
-								<a href="#singleton">单例模式</a>
+								<a href="Singleton.html">单例模式</a>
+							</li>
+							<li class="">
+								<a href="BridgePattern.html">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="CommandPattern.html">命令模式</a>
+							</li>
+							<li class="">
+								<a href="ChainOfResponsibility.html">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="Mediator.html">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
 								<ul class="nav">
 									<li>
 										<a href="#StateDemo">模版</a>
@@ -189,30 +248,15 @@ class Singleton {
 										<a href="#Condition">应用场景</a>
 									</li>
 									<li>
-										<a href="#About">分类</a>
+										<a href="#About">相关模式</a>
 									</li>
 									<li>
-										<a href="#AandD">特点</a>
+										<a href="#AandD">优点与缺点</a>
 									</li>
 									<li>
 										<a href="#Nature">本质</a>
 									</li>
 								</ul>
-							</li>
-							<li class="">
-								<a href="#bridge">桥接模式</a>
-							</li>
-							<li class="">
-								<a href="#command">命令模式</a>
-							</li>
-							<li class="">
-								<a href="#responsibility">职责链模式</a>
-							</li>
-							<li class="">
-								<a href="#mediator">中介者模式</a>
-							</li>
-							<li class="">
-								<a href="#flyweight">享元模式</a>
 							</li>
 							<li class="">
 								<a href="#interpreter">解释器模式</a>

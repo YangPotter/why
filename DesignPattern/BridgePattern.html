@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>Design Pattern-Singleton</title>
+		<title>Design Pattern-Bridge</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
 		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
@@ -71,12 +71,13 @@
 				<div class="col-md-8 ">
 
 					<div class="bs-docs-section">
-						<h1 id="singleton" class="page-header">单例模式</h1>
+						<h1 id="bridge" class="page-header">桥接模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								单例模式（Singleton），保证一个类只有一个实例，并提供一个访问它的全局访问点。
+								桥接模式（Bridge），将抽象部分与它的实现部分分类，使它们都可以独立地变化。
 							</p>
 						</div><br />
+						<p>这种模式涉及到一个作为桥接的接口，使得实体类的功能独立于接口实现类。这两种类型的类可被结构化改变而互不影响。</p>
 						<div id="StateDemo" class="bs-callout bs-callout-danger">
 							<h2 >模版</h2>
 						</div>
@@ -85,34 +86,66 @@
 							<pre>
 								<code>
 
-package SingletonPattern;
+package BridgePattern;
 
-public class SingletonDemo {
+//客户端实现
+public class BridgeDemo {
 	public static void main(String args[]) {
-		Singleton s1 = Singleton.GetInstance();
-		Singleton s2 = Singleton.GetInstance();
+		Abstraction ab = new RefinedAbstraction();
 		
-		if(s1 == s2) {
-			System.out.println("两个对象是相同的实例");
-		}
+		ab.SetImplementor(new ConcreteImplementorA());
+		ab.Operation();
+		
+		ab.SetImplementor(new ConcreteImplementorB());
+		ab.Operation();
 	}
 }
 
-//Singleton类
-class Singleton {
-	private static Singleton instance;
-	
-	private Singleton() {    //构造方法，让其private，堵死外界利用new创建此类实例可能
-		
+abstract class Implementor {
+	public abstract void Operation();
+}
+
+//Implementor派生类
+class ConcreteImplementorA extends Implementor {
+
+	@Override
+	public void Operation() {
+		System.out.println("具体实现A的方法执行");
 	}
 	
-	public static Singleton GetInstance() {
-		if(instance == null) {    //若类不存在，new新实例，否则返回已有实例
-			instance = new Singleton();
-		}
-		return instance;
+}
+
+//Implementor派生类
+class ConcreteImplementorB extends Implementor {
+
+	@Override
+	public void Operation() {
+		System.out.println("具体实现B的方法执行");
+	}
+	
+}
+
+//Abstraction类
+class Abstraction {
+	protected Implementor implementor;
+	
+	public void SetImplementor(Implementor implementor) {
+		this.implementor = implementor;
+	}
+	
+	public void Operation() {
+		implementor.Operation();
 	}
 }
+
+//RefinendAbstraction类
+class RefinedAbstraction extends Abstraction {
+	public void Operation() {
+		implementor.Operation();
+	}
+}
+
+
 	
 
 								</code>
@@ -122,43 +155,43 @@ class Singleton {
 						<div id="StateUML" class="bs-callout bs-callout-danger">
 							<h2 >UML类图</h2>
 						</div>
-						<img src="img/Singleton/Singleton.cld.jpg" alt="状态模式UML类图" /><br />
+						<img src="img/BridgePattern/BridgePattern.cld.jpg" alt="状态模式UML类图" /><br />
 						
 						<div id="Condition" class="bs-callout bs-callout-danger">
 							<h2>应用场景</h2>
 						</div>
 						<p class="lead">
-							建议在如下情况中，选用单例模式：
+							建议在如下情况中，选用桥接模式：
 						</p>
 						<ul>
-							<li class="text-primary">在一个系统要求一个类只有一个实例时才应当使用单例模式。</li><br />
-							<li class="text-primary">反过来，如果一个类可以有几个实例共存，就不要使用单例模式。</li>
+							<li class="text-primary">如果一个系统需要在构件的抽象化角色和具体化角色之间增加更多的灵活性，避免在两个层次之间建立静态的继承联系，通过桥接模式可以使它们在抽象层建立一个关联关系。</li><br />
+							<li class="text-primary">对于那些不希望使用继承或因为多层次继承导致系统类的个数急剧增加的系统，桥接模式尤为适用。</li>
+							<li class="text-primary">一个类存在两个独立变化的维度，且这两个维度都需要进行扩展。</li>
 						</ul>
 						<br />
-						
-						<div id="About" class="bs-callout bs-callout-danger">
-						<h2>分类</h2>
-						</div><br />
-						<p class="lead">
-							单例模式的实现又分为两种：
-						</p>
-						<ul>
-							<li class="text-primary">懒汉式单例模式（时间换空间）</li><br />
-							<li class="text-primary">饿汉式单例模式（空间换时间）</li>
-						</ul><br />
+					
 						
 						<div id="AandD" class="bs-callout bs-callout-danger">
-							<h2 >特点</h2>
+							<h2 >优点与缺点</h2>
 						</div>
-						<ul class="list">
-							<li class="lead">单例类只能有一个实例。</li>
-							<li class="lead">单例类必须自己创建自己的唯一实例。</li>
-							<li class="lead">单例类必须给所有其它对象提供这一实例。</li>
-						</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="lead">抽象和实现的分离。</li>
+								<li class="lead">优秀的扩展能力。</li>
+								<li class="lead">实现细节对客户透明。</li>
+							</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>缺点：</h4>
+						</div>
+							<ul class="list">
+								<li>桥接模式的引入会增加系统的理解与设计难度，由于聚合关联关系建立在抽象层，要求开发者针对抽象进行设计与编程。</li>
+							</ul>
 						<div id="Nature" class="bs-callout bs-callout-danger">
 							<h2 >本质</h2>
 						</div>
-						<p class="lead">控制实例数目</p>
+						<p class="lead">分离抽象和实现。</p>
 					</div>
 				</div>
 				<div class="col-md-2 ">
@@ -174,10 +207,13 @@ class Singleton {
 								<a href="MementoPattern.html">备忘录模式</a>
 							</li>
 							<li class="">
-								<a href="Composite.html">组合模式</a>
+								<a href="Composite.htmlm">组合模式</a>
 							</li>
 							<li class="">
-								<a href="#singleton">单例模式</a>
+								<a href="Singleton.html">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
 								<ul class="nav">
 									<li>
 										<a href="#StateDemo">模版</a>
@@ -189,18 +225,12 @@ class Singleton {
 										<a href="#Condition">应用场景</a>
 									</li>
 									<li>
-										<a href="#About">分类</a>
-									</li>
-									<li>
-										<a href="#AandD">特点</a>
+										<a href="#AandD">优点与缺点</a>
 									</li>
 									<li>
 										<a href="#Nature">本质</a>
 									</li>
 								</ul>
-							</li>
-							<li class="">
-								<a href="#bridge">桥接模式</a>
 							</li>
 							<li class="">
 								<a href="#command">命令模式</a>

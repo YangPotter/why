@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>Design Pattern-Composite</title>
+		<title>Design Pattern-Mediator</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
 		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
@@ -71,15 +71,14 @@
 				<div class="col-md-8 ">
 
 					<div class="bs-docs-section">
-						<h1 id="composite" class="page-header">组合模式</h1>
+						<h1 id="mediator" class="page-header">中介者模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								组合模式（Composite），对象组织到树结构中，可以用来描述整体与部分的关系。组合模式可以使客户端将单纯元素与复合元素同等看待。
+								中介者模式（Mediator），用一个中介对象来封装一系列的对象交互。中介者使各对象不需要显式的相互引用，从而使其耦合松散，而且可以独立地改变它们之间的交互
 							</p>
 						</div><br />
-						<p><span class="text-primary">抽象构件（Component）角色：</span>这是一个抽象角色，它给参与组合的对象规定一个接口。这个角色给出共有接口及其默认行为。</p>
-						<p><span class="text-primary">树叶构件（Leaf）角色：</span>代表参加组合的树叶对象。一个树叶对象没有下级子对象。 </p>
-						<p><span class="text-primary">树枝构件（Composite）角色：</span>代表参加组合的有子对象的对象，并给出树枝构件对象的行为。 </p>
+						<p>Mediator模式将对象间的交互和通信封装在一个类中，各个对象间的通信不必显式去声明和引用，大大降低了系统的复杂性能（了解一个对象总比深入熟悉n个对象要好）。</p>
+						<p>Mediator模式还带来了系统对象间的松耦合 </p>
 						<div id="StateDemo" class="bs-callout bs-callout-danger">
 							<h2 >模版</h2>
 						</div>
@@ -88,112 +87,96 @@
 							<pre>
 								<code>
 
-package CompositePattern;
+//中介者模式
+package MediatorPattern;
 
-import java.util.*;
-
-//组合模式，客户端
-public class ConpositeDemo {
+public class MediatorPattern {
 	public static void main(String args[]) {
-		Composite root = new Composite("root");
+		ConcreteMediator m = new ConcreteMediator();
 		
-		root.Add(new Leaf("Leaf A"));
-		root.Add(new Leaf("Leaf B"));
+		ConcreteColleague1 c1 = new ConcreteColleague1(m);
+		ConcreteColleague2 c2 = new ConcreteColleague2(m);
 		
-		Composite comp = new Composite("Composite X");
-		comp.Add(new Leaf("Leaf XA"));
-		comp.Add(new Leaf("Leaf XB"));
+		m.setColleague1(c1);
+		m.setColleague2(c2);
 		
-		root.Add(comp);
-		
-		Composite comp2 = new Composite("Composite XY");
-		comp2.Add(new Leaf("Leaf XYA"));
-		comp2.Add(new Leaf("Leaf XYB"));
-		
-		comp.Add(comp2);
-		
-		root.Add(new Leaf("Leaf C"));
-		
-		Leaf leaf = new Leaf("Leaf D");
-		root.Add(leaf);
-		root.Remove(leaf);
-		
-		root.Display(1);
-		
+		c1.Send("吃饭了吗？");
+		c2.Send("没有，你打算请客？");
 	}
 }
 
-//Component类
-abstract class Component {
-	protected String name;
-	
-	public Component(String name) {
-		this.name = name;
-	}
-	
-	public abstract void Add(Component c);
-	public abstract void Remove(Component c);
-	public abstract void Display(int depth);
+//Mediator类
+abstract class Mediator {
+	public abstract void Send(String message, Colleague colleague);
 }
 
-//Leaf类
-class Leaf extends Component {
+//Colleague类，抽象同事类
+abstract class Colleague {
+	protected Mediator mediator;
+	
+	public Colleague(Mediator mediator) {
+		this.mediator = mediator;
+	}
+}
 
-	public Leaf(String name) {
-		super(name);
+//ConcreteMediator类
+class ConcreteMediator extends Mediator {
+	private ConcreteColleague1 colleague1;
+	private ConcreteColleague2 colleague2;
+	
+	public void setColleague1(ConcreteColleague1 colleague1) {
+		this.colleague1 = colleague1;
+	}
+	
+	public void setColleague2(ConcreteColleague2 colleague2) {
+		this.colleague2 = colleague2;
 	}
 
 	@Override
-	public void Add(Component c) {
-		System.out.println("Cannot add to a leaf");
-	}
-
-	@Override
-	public void Remove(Component c) {
-		System.out.println("Cannot remove from a leaf");
-	}
-
-	@Override
-	public void Display(int depth) {
-		for(int i = 0; i < depth; i++) {
-			System.out.print("-");
+	public void Send(String message, Colleague colleague) {
+		if(colleague == colleague1) {
+			colleague2.Notify(message);
+		}else {
+			colleague1.Notify(message);
 		}
-		System.out.println(name);
-	}
-	
+	}	
 	
 }
 
-//Composite类
-class Composite extends Component {
-	private List<Component> children = new ArrayList<Component>();
+//ConcreteColleague1类
+class ConcreteColleague1 extends Colleague {
 
-	public Composite(String name) {
-		super(name);
+	public ConcreteColleague1(Mediator mediator) {
+		super(mediator);
 	}
 	
-	@Override
-	public void Add(Component c) {
-		children.add(c);
+	public void Send(String message) {
+		mediator.Send(message, this);
 	}
-
-	@Override
-	public void Remove(Component c) {
-		children.remove(c);
+	
+	public void Notify(String message) {
+		System.out.println("同事1得到信息：" + message);
 	}
-
-	@Override
-	public void Display(int depth) {
-		for(int i = 0; i < depth; i++) {
-			System.out.print("-");
-		}
-		System.out.println(name);
-		
-		for(Component component:children) {
-			component.Display(depth + 2);
-		}
-	}
+	
 }
+
+class ConcreteColleague2 extends Colleague {
+
+	public ConcreteColleague2(Mediator mediator) {
+		super(mediator);
+	}
+	
+	public void Send(String message) {
+		mediator.Send(message, this);
+	}
+	
+	public void Notify(String message) {
+		System.out.println("同事2得到信息：" + message);
+	}
+	
+}
+
+
 	
 
 								</code>
@@ -203,25 +186,28 @@ class Composite extends Component {
 						<div id="StateUML" class="bs-callout bs-callout-danger">
 							<h2 >UML类图</h2>
 						</div>
-						<img src="img/CompositePattern/CompositePattern.cld.jpg" alt="状态模式UML类图" /><br />
+						<img src="img/MediatorPattern/MediatorPattern.cld.jpg" alt="状态模式UML类图" /><br />
 						
 						<div id="Condition" class="bs-callout bs-callout-danger">
 							<h2>应用场景</h2>
 						</div>
 						<p class="lead">
-							建议在如下情况中，选用组合模式：
+							建议在如下情况中，选用中介者模式：
 						</p>
 						<ul>
-							<li class="text-primary">需求中是体现部分与整体层次的结构时</li><br />
-							<li class="text-primary">希望用户忽略组合对象与单个对象的不同，统一的使用组合结构中的所有对象时</li>
+							<li class="text-primary">如果一组对象之间的通信方式比较复杂，导致相互依赖、结构混乱，可以采用中介者模式，把这些对象相互的交互管理起来。</li><br />
+							<li class="text-primary">如果一个对象引用很多的对象，并直接跟这些对象交互，导致难以复用该对象，可以采用中介者模式，把这个对象跟其他对象的交互封装到中介者对象里面。</li>
 						</ul>
 						<br />
 						
 						<div id="About" class="bs-callout bs-callout-danger">
 						<h2>相关模式</h2>
 						</div><br />
-						<h3>组合模式与迭代器模式</h3><br />
-   						<p>这两个模式可以组合使用，在组合模式中，通常可以使用迭代器模式来遍历组合对象的子对象集合，而无需关心具体存放子对象的聚合结构</p>
+						<h3>外观模式和中介者模式</h3><br />
+   						<p>外观模式和中介者模式有着共同的目的。它们都是调配一组相互耦合的对象的通信。不过门面模式关注的是这组复杂对象如何与外界通信，而中介者模式是调配这组复杂对象之间的通信。</p>
+						<br />
+						<h3>中介者模式和观察者模式</h3><br />
+   						<p>可以组合使用，来实现当同事对象发生改变的时候，通知中介对象，让中介对象去进行与其他相关对象的交互</p>
 						<br />
 						
 						<div id="AandD" class="bs-callout bs-callout-danger">
@@ -231,24 +217,20 @@ class Composite extends Component {
 							<h4>优点：</h4>
 						</div>
 							<ul class="list">
-								<li class="lead">统一了组合对象和叶子对象</li>
-								<li class="lead">简化了客户端调用</li>
-								<p>不用区分组合对象和叶子对象</p>
-								<li class="lead">更容易扩展</li>
-								<p>由于客户端是统一的面对Component来操作，因此，新定义的Composite或leaf子类能够很容易的与已有的结构一起工作，而不需改变客户端</p>
-								
+								<li class="lead">Mediator模式是一种很有用并且很常用的模式，它通过将对象间的通信封装到一个类中，将多对多的通信转化为一对多的通信，降低了系统的复杂性。</li>
+								<li class="lead">Mediator还获得系统解耦的特性，通过Mediator，各个Colleague就不必维护各自通信的对象和通信协议，降低了系统的耦合性，Mediator和各个Colleague就可以相互独立地修改了。 </li>
+								<li class="lead">Mediator模式还有一个很显著的特点就是将控制集中，集中的优点就是便于管理，也正符合了OO设计中的每个类的职责要单一和集中的原则。</li>
 							</ul>
 						<div id="AandD" class="bs-callout bs-callout-warning">
 							<h4>缺点：</h4>
 						</div>
 							<ul class="list">
-								<li>很难限制组合中的组件类型</li>
-								<p>这是容易添加新的组件带来的问题，在需要检测组件类型的时候，使得我们不能依靠编译期的类型约束来完成，必须在运行期间动态检测</p>
+								<li>由于控制的集中化，于是把交互复杂性变为了中介者的复杂性，这就使得中介者会变得比任何一个ConcreteColleague都复杂</li>
 							</ul>
 						<div id="Nature" class="bs-callout bs-callout-danger">
 							<h2 >本质</h2>
 						</div>
-						<p class="lead">统一叶子对象和组合对象</p>
+						<p class="lead">封装交互</p>
 					</div>
 				</div>
 				<div class="col-md-2 ">
@@ -264,7 +246,23 @@ class Composite extends Component {
 								<a href="MementoPattern.html">备忘录模式</a>
 							</li>
 							<li class="">
-								<a href="#composite">组合模式</a>
+								<a href="Composite.html">组合模式</a>
+								
+							</li>
+							<li class="">
+								<a href="Singleton.html">单例模式</a>
+							</li>
+							<li class="">
+								<a href="BridgePattern.html">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="CommandPattern.html">命令模式</a>
+							</li>
+							<li class="">
+								<a href="ChainOfResponsibility.html">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
 								<ul class="nav">
 									<li>
 										<a href="#StateDemo">模版</a>
@@ -285,21 +283,6 @@ class Composite extends Component {
 										<a href="#Nature">本质</a>
 									</li>
 								</ul>
-							</li>
-							<li class="">
-								<a href="Singleton.html">单例模式</a>
-							</li>
-							<li class="">
-								<a href="#bridge">桥接模式</a>
-							</li>
-							<li class="">
-								<a href="#command">命令模式</a>
-							</li>
-							<li class="">
-								<a href="#responsibility">职责链模式</a>
-							</li>
-							<li class="">
-								<a href="#mediator">中介者模式</a>
 							</li>
 							<li class="">
 								<a href="#flyweight">享元模式</a>
