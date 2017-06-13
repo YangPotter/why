@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-Prototype</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello, DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="400">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="SimpleFactoryPattern.html">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="StrategyPattern.html">策略模式</a>
+							</li>
+							<li class="">
+								<a href="Principle.html">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="DecorationPattern.html">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="ProxyPattern.html">代理模式</a>
+							</li>
+							<li class="">
+								<a href="#prototype">原型模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#Condition">应用场景</a>
+									</li>
+									<li>
+										<a href="#About">相关模式</a>
+									</li>
+									<li>
+										<a href="#AandD">优点与缺点</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="TemplateMethod.htmle">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="FacadePattern.html">外观模式</a>
+							</li>
+							<li class="">
+								<a href="BuilderPattern.html">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="ObserverPattern.html">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="AbstractFactory.html">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="prototype" class="page-header">原型模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								原型模式（Prototype），用原型实例指定创建的对象的种类，并且通过拷贝这些原型创建新的对象。
+							</p>
+						</div><br />
+						<p><span class="text-primary">客户（Client）角色：</span>客户类提出创建对象的请求。 </p>
+						<p><span class="text-primary">抽象原型（Prototype）角色：</span>这是一个抽象角色，通常由一个C#接口或抽象类实现。此角色给出所有的具体原型类所需的接口。在C#中，抽象原型角色通常实现了ICloneable接口。</p>
+						<p><span class="text-primary">具体原型（Concrete Prototype）角色：</span>被复制的对象。此角色需要实现抽象原型角色所要求的接口。</p>
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+package PrototypePattern;
+
+public class PrototypeDemo {
+	public static void main(String args[]) throws CloneNotSupportedException {
+		ConcretePrototype1 p1 = new ConcretePrototype1("1");
+		ConcretePrototype1 c1 = (ConcretePrototype1)p1.Clone();
+		
+		System.out.println("Cloned:" + c1.getId());
+	}
+}
+
+//原型类
+abstract class Prototype {
+	private String id;
+	
+	public Prototype(String id) {
+		this.id  = id ;
+	}
+	public String getId() {
+		return id;
+	}
+	public abstract Prototype Clone() throws CloneNotSupportedException;
+}
+
+//具体原型类
+class ConcretePrototype1 extends Prototype {
+	public ConcretePrototype1(String id) {
+		super(id);
+	}
+
+	public Prototype Clone() throws CloneNotSupportedException {
+		return (Prototype)this.clone();
+	}
+}
+
+
+class ConcretePrototype2 extends Prototype {
+	public ConcretePrototype2(String id) {
+		super(id);
+	}
+
+	public Prototype Clone() throws CloneNotSupportedException {
+		return (Prototype)this.clone();
+	}
+}
+	
+
+								</code>
+							</pre>
+						</figure>
+
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						<img src="img/PrototypePattern/PrototypePattern.cld.jpg" alt="状态模式UML类图" /><br />
+						
+						<div id="Condition" class="bs-callout bs-callout-danger">
+							<h2>应用场景</h2>
+						</div>
+						<p class="lead">
+							建议在如下情况中，选用原型模式：
+						</p>
+						<ul>
+							<li class="text-primary">如果一个系统想要独立于它想要使用的对象时，可以使用原型模式，让系统只面向接口编程，在系统需要新的对象的时候，可以通过克隆原型来得到</li><br />
+							<li class="text-primary">如果需要实例化的类是在运行时刻动态指定时，可以使用原型模式，通过克隆原型来得到需要的实例</li>
+						</ul>
+						<br />
+						
+						<div id="About" class="bs-callout bs-callout-danger">
+						<h2>相关模式</h2>
+						</div><br />
+						<h3>原型模式和抽象工厂模式</h3><br />
+						<p>功能上有些相似，都是用来获取一个新的对象实例的。</p>
+   						<p>不同之处在于，原型模式的着眼点是在如何创造出实例对象来，最后选择的方案是通过克隆；而抽象工厂模式的着眼点则在于如何来创造产品簇，至于具体如何创建出产品簇中的每个对象实例，抽象工厂模式不是很关注。</p>
+						<br />
+						<h3>原型模式和生成器模式（建造者模式）</h3><br />
+						<p>这两种模式可以配合使用。</p>
+   						<p>生成器模式关注的是构建的过程，而在构建的过程中，很可能需要某个部件的实例，那么很自然地就可以应用上原型模式，通过原型模式来得到部件的实例。</p>
+						<br />
+						
+						
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2 >优点与缺点</h2>
+						</div>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="lead">对客户端隐藏具体的实现类型</li>
+								<p>原型模式的客户端，只知道原型接口的类型，并不知道具体的实现类型，从而减少了客户端对这些具体实现类型的依赖。</p>
+								<li class="lead">在运行时动态改变具体的实现类型</li>
+								<p>原型模式可以在运行期间，由客户来注册符合原型接口的实现类型，也可以动态的改变具体的实现类型，看起来接口没有任何变化，但其实运行的已经是另外一个类实例了。因为克隆一个原型就类似于实例化一个类。</p>
+							</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>缺点：</h4>
+						</div>
+							<ul class="list">
+								<li>深度克隆方法实现会比较困难</li>
+								<p>原型模式最大的缺点就在于每个原型的子类都必须实现clone的操作，尤其在包含引用类型的对象时，clone方法会比较麻烦，必须要能够递归的让所有的相关对象都要正确的实现克隆。</p>
+							</ul>
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2 >本质</h2>
+						</div>
+						<p class="lead">克隆生成对象 。</p>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="MementoPattern.html">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#iterator">迭代器模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>

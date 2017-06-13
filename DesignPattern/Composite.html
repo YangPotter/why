@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-Composite</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello, DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="400">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="SimpleFactoryPattern.html">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="StrategyPattern.html">策略模式</a>
+							</li>
+							<li class="">
+								<a href="Principle.html">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="DecorationPattern.html">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="ProxyPattern.html">代理模式</a>
+							</li>
+							<li class="">
+								<a href="Prototype.html">原型模式</a>
+							</li>
+							<li class="">
+								<a href="TemplateMethod.htmle">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="FacadePattern.html">外观模式</a>
+							</li>
+							<li class="">
+								<a href="BuilderPattern.html">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="ObserverPattern.html">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="AbstractFactory.html">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="composite" class="page-header">组合模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								组合模式（Composite），对象组织到树结构中，可以用来描述整体与部分的关系。组合模式可以使客户端将单纯元素与复合元素同等看待。
+							</p>
+						</div><br />
+						<p><span class="text-primary">抽象构件（Component）角色：</span>这是一个抽象角色，它给参与组合的对象规定一个接口。这个角色给出共有接口及其默认行为。</p>
+						<p><span class="text-primary">树叶构件（Leaf）角色：</span>代表参加组合的树叶对象。一个树叶对象没有下级子对象。 </p>
+						<p><span class="text-primary">树枝构件（Composite）角色：</span>代表参加组合的有子对象的对象，并给出树枝构件对象的行为。 </p>
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+package CompositePattern;
+
+import java.util.*;
+
+//组合模式，客户端
+public class ConpositeDemo {
+	public static void main(String args[]) {
+		Composite root = new Composite("root");
+		
+		root.Add(new Leaf("Leaf A"));
+		root.Add(new Leaf("Leaf B"));
+		
+		Composite comp = new Composite("Composite X");
+		comp.Add(new Leaf("Leaf XA"));
+		comp.Add(new Leaf("Leaf XB"));
+		
+		root.Add(comp);
+		
+		Composite comp2 = new Composite("Composite XY");
+		comp2.Add(new Leaf("Leaf XYA"));
+		comp2.Add(new Leaf("Leaf XYB"));
+		
+		comp.Add(comp2);
+		
+		root.Add(new Leaf("Leaf C"));
+		
+		Leaf leaf = new Leaf("Leaf D");
+		root.Add(leaf);
+		root.Remove(leaf);
+		
+		root.Display(1);
+		
+	}
+}
+
+//Component类
+abstract class Component {
+	protected String name;
+	
+	public Component(String name) {
+		this.name = name;
+	}
+	
+	public abstract void Add(Component c);
+	public abstract void Remove(Component c);
+	public abstract void Display(int depth);
+}
+
+//Leaf类
+class Leaf extends Component {
+
+	public Leaf(String name) {
+		super(name);
+	}
+
+	@Override
+	public void Add(Component c) {
+		System.out.println("Cannot add to a leaf");
+	}
+
+	@Override
+	public void Remove(Component c) {
+		System.out.println("Cannot remove from a leaf");
+	}
+
+	@Override
+	public void Display(int depth) {
+		for(int i = 0; i < depth; i++) {
+			System.out.print("-");
+		}
+		System.out.println(name);
+	}
+	
+	
+}
+
+//Composite类
+class Composite extends Component {
+	private List<Component> children = new ArrayList<Component>();
+
+	public Composite(String name) {
+		super(name);
+	}
+	
+	@Override
+	public void Add(Component c) {
+		children.add(c);
+	}
+
+	@Override
+	public void Remove(Component c) {
+		children.remove(c);
+	}
+
+	@Override
+	public void Display(int depth) {
+		for(int i = 0; i < depth; i++) {
+			System.out.print("-");
+		}
+		System.out.println(name);
+		
+		for(Component component:children) {
+			component.Display(depth + 2);
+		}
+	}
+}
+	
+
+								</code>
+							</pre>
+						</figure>
+
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						<img src="img/CompositePattern/CompositePattern.cld.jpg" alt="状态模式UML类图" /><br />
+						
+						<div id="Condition" class="bs-callout bs-callout-danger">
+							<h2>应用场景</h2>
+						</div>
+						<p class="lead">
+							建议在如下情况中，选用组合模式：
+						</p>
+						<ul>
+							<li class="text-primary">需求中是体现部分与整体层次的结构时</li><br />
+							<li class="text-primary">希望用户忽略组合对象与单个对象的不同，统一的使用组合结构中的所有对象时</li>
+						</ul>
+						<br />
+						
+						<div id="About" class="bs-callout bs-callout-danger">
+						<h2>相关模式</h2>
+						</div><br />
+						<h3>组合模式与迭代器模式</h3><br />
+   						<p>这两个模式可以组合使用，在组合模式中，通常可以使用迭代器模式来遍历组合对象的子对象集合，而无需关心具体存放子对象的聚合结构</p>
+						<br />
+						
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2 >优点与缺点</h2>
+						</div>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>优点：</h4>
+						</div>
+							<ul class="list">
+								<li class="lead">统一了组合对象和叶子对象</li>
+								<li class="lead">简化了客户端调用</li>
+								<p>不用区分组合对象和叶子对象</p>
+								<li class="lead">更容易扩展</li>
+								<p>由于客户端是统一的面对Component来操作，因此，新定义的Composite或leaf子类能够很容易的与已有的结构一起工作，而不需改变客户端</p>
+								
+							</ul>
+						<div id="AandD" class="bs-callout bs-callout-warning">
+							<h4>缺点：</h4>
+						</div>
+							<ul class="list">
+								<li>很难限制组合中的组件类型</li>
+								<p>这是容易添加新的组件带来的问题，在需要检测组件类型的时候，使得我们不能依靠编译期的类型约束来完成，必须在运行期间动态检测</p>
+							</ul>
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2 >本质</h2>
+						</div>
+						<p class="lead">统一叶子对象和组合对象</p>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="MementoPattern.html">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="#composite">组合模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#Condition">应用场景</a>
+									</li>
+									<li>
+										<a href="#About">相关模式</a>
+									</li>
+									<li>
+										<a href="#AandD">优点与缺点</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="Singleton.html">单例模式</a>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>

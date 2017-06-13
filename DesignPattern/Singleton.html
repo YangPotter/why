@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Design Pattern-Singleton</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+		<link rel="stylesheet" type="text/css" href="css/docs.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css"/>
+
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+	</head>
+
+	<body data-target="#sideNav" data-spy="scroll">
+		<div class="jumbotron" style="background-color: #624887;color: white;">
+			<div class="container">
+				<h1>设计模式&nbsp;<small style="color: white;">Design Pattern</small></h1>
+				<br />
+				<h2>Hello, DesignPattern!</h2>
+				<br />
+			  	<p>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。
+			  		设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。
+			  		这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
+			 	</p>
+			</div>
+		</div>
+		<div class="container main">
+			<div class="row">
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md" data-spy="affix" data-offset-top="400">
+						<ul class="nav nav-stacked" >
+							<li class="">
+								<a href="SimpleFactoryPattern.html">简单工厂模式</a>
+							</li>
+							<li class="">
+								<a href="StrategyPattern.html">策略模式</a>
+							</li>
+							<li class="">
+								<a href="Principle.html">设计模式原则</a>
+							</li>
+							<li class="">
+								<a href="DecorationPattern.html">装饰模式</a>
+							</li>
+							<li class="">
+								<a href="ProxyPattern.html">代理模式</a>
+							</li>
+							<li class="">
+								<a href="Prototype.html">原型模式</a>
+							</li>
+							<li class="">
+								<a href="TemplateMethod.htmle">模版方法模式</a>
+							</li>
+							<li class="">
+								<a href="FacadePattern.html">外观模式</a>
+							</li>
+							<li class="">
+								<a href="BuilderPattern.html">建造者模式</a>
+							</li>
+							<li class="">
+								<a href="ObserverPattern.html">观察者模式</a>
+							</li>
+							<li class="">
+								<a href="AbstractFactory.html">抽象工厂模式</a>
+							</li>
+							
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-8 ">
+
+					<div class="bs-docs-section">
+						<h1 id="singleton" class="page-header">单例模式</h1>
+						<div class="bs-callout bs-callout-info">
+							<p class="lead">
+								单例模式（Singleton），保证一个类只有一个实例，并提供一个访问它的全局访问点。
+							</p>
+						</div><br />
+						<div id="StateDemo" class="bs-callout bs-callout-danger">
+							<h2 >模版</h2>
+						</div>
+						
+						<figure class="highlight">
+							<pre>
+								<code>
+
+package SingletonPattern;
+
+public class SingletonDemo {
+	public static void main(String args[]) {
+		Singleton s1 = Singleton.GetInstance();
+		Singleton s2 = Singleton.GetInstance();
+		
+		if(s1 == s2) {
+			System.out.println("两个对象是相同的实例");
+		}
+	}
+}
+
+//Singleton类
+class Singleton {
+	private static Singleton instance;
+	
+	private Singleton() {    //构造方法，让其private，堵死外界利用new创建此类实例可能
+		
+	}
+	
+	public static Singleton GetInstance() {
+		if(instance == null) {    //若类不存在，new新实例，否则返回已有实例
+			instance = new Singleton();
+		}
+		return instance;
+	}
+}
+	
+
+								</code>
+							</pre>
+						</figure>
+
+						<div id="StateUML" class="bs-callout bs-callout-danger">
+							<h2 >UML类图</h2>
+						</div>
+						<img src="img/Singleton/Singleton.cld.jpg" alt="状态模式UML类图" /><br />
+						
+						<div id="Condition" class="bs-callout bs-callout-danger">
+							<h2>应用场景</h2>
+						</div>
+						<p class="lead">
+							建议在如下情况中，选用单例模式：
+						</p>
+						<ul>
+							<li class="text-primary">在一个系统要求一个类只有一个实例时才应当使用单例模式。</li><br />
+							<li class="text-primary">反过来，如果一个类可以有几个实例共存，就不要使用单例模式。</li>
+						</ul>
+						<br />
+						
+						<div id="About" class="bs-callout bs-callout-danger">
+						<h2>分类</h2>
+						</div><br />
+						<p class="lead">
+							单例模式的实现又分为两种：
+						</p>
+						<ul>
+							<li class="text-primary">懒汉式单例模式（时间换空间）</li><br />
+							<li class="text-primary">饿汉式单例模式（空间换时间）</li>
+						</ul><br />
+						
+						<div id="AandD" class="bs-callout bs-callout-danger">
+							<h2 >特点</h2>
+						</div>
+						<ul class="list">
+							<li class="lead">单例类只能有一个实例。</li>
+							<li class="lead">单例类必须自己创建自己的唯一实例。</li>
+							<li class="lead">单例类必须给所有其它对象提供这一实例。</li>
+						</ul>
+						<div id="Nature" class="bs-callout bs-callout-danger">
+							<h2 >本质</h2>
+						</div>
+						<p class="lead">控制实例数目</p>
+					</div>
+				</div>
+				<div class="col-md-2 ">
+					<nav id="sideNav" class="bs-docs-sidebar hidden-print hidden-md affix"data-spy="affix" data-offset-top="460" >
+						<ul class="nav bs-docs-sidenav">
+							<li class="">
+								<a href="StatePattern.html">状态模式</a>
+							</li>
+							<li class="">
+								<a href="AdapterPattern.html">适配器模式</a>
+							</li>
+							<li class="">
+								<a href="MementoPattern.html">备忘录模式</a>
+							</li>
+							<li class="">
+								<a href="Composite.html">组合模式</a>
+							</li>
+							<li class="">
+								<a href="#singleton">单例模式</a>
+								<ul class="nav">
+									<li>
+										<a href="#StateDemo">模版</a>
+									</li>
+									<li>
+										<a href="#StateUML">类图</a>
+									</li>
+									<li>
+										<a href="#Condition">应用场景</a>
+									</li>
+									<li>
+										<a href="#About">分类</a>
+									</li>
+									<li>
+										<a href="#AandD">特点</a>
+									</li>
+									<li>
+										<a href="#Nature">本质</a>
+									</li>
+								</ul>
+							</li>
+							<li class="">
+								<a href="#bridge">桥接模式</a>
+							</li>
+							<li class="">
+								<a href="#command">命令模式</a>
+							</li>
+							<li class="">
+								<a href="#responsibility">职责链模式</a>
+							</li>
+							<li class="">
+								<a href="#mediator">中介者模式</a>
+							</li>
+							<li class="">
+								<a href="#flyweight">享元模式</a>
+							</li>
+							<li class="">
+								<a href="#interpreter">解释器模式</a>
+							</li>
+							<li class="">
+								<a href="#visitor">访问者模式</a>
+							</li>
+							<li class="">
+								<a href="#summary">模式总结</a>
+							</li>							
+							<li class="">
+								<a href="#top" class="back-to-top">返回顶部</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bs-docs-footer">
+			<div class="container">
+				<h4 align="center"><a href="#top" class="back-to-top">返回顶部</a></h4>
+				<h4 align="center">&copy;Made by W.H.Y</h4>
+			</div>
+		</footer>
+	</body>
+
+</html>
