@@ -109,9 +109,12 @@
 //抽象工厂模式
 package AbstractFactory;
 
+import java.util.Scanner;
+
 public class AbstractFactoryDemo {
 
 	public static void main(String[] args) {
+		
 		User user = new User();
 		Department dept = new Department();
 		
@@ -229,13 +232,11 @@ class AccessDepartment implements IDepartment {
 }
 
 
-
-
-
 //获取数据库
 class DataAccess {
-	private static String db = null;
-	
+	static Scanner input = new Scanner(System.in);
+	private static String db = input.next();
+
 	public static IUser CreateUser() {
 		IUser result = null;
 		switch(db) {
@@ -350,9 +351,6 @@ class DataAccess {
 							</li>
 							<li class="">
 								<a href="FlyweightPattern.html">享元模式</a>
-							</li>
-							<li class="">
-								<a href="InterpreterPattern.htmlr">解释器模式</a>
 							</li>
 							<li class="">
 								<a href="VisitorPattern.html">访问者模式</a>
