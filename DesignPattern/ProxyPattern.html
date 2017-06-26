@@ -53,8 +53,6 @@
 										<a href="#StateUML">类图</a>
 									</li>
 									<li>
-										<a href="#StateExample">实例</a>
-									</li>
 									<li>
 										<a href="#AandD">应用</a>
 									</li>
@@ -97,7 +95,7 @@
 						<h1 id="proxy" class="page-header">代理模式</h1>
 						<div class="bs-callout bs-callout-info">
 							<p class="lead">
-								代理模式（Proxy Pattern）为其他对象提供一种代理以控制对之歌对象的访问。
+								代理模式（Proxy Pattern）为其他对象提供一种代理以控制对这个对象的访问。
 							</p>
 						</div>
 						<br />
@@ -159,82 +157,6 @@ class Proxy extends Subject {
 						</div>
 						
 						<img src="img/ProxyPattern/Proxy.cld.jpg" alt="状态模式UML类图" /><br />
-						<div id="StateExample" class="bs-callout bs-callout-danger">
-							<h2>代理模式实例</h2>
-						</div>
-						
-						<figure class="highlight">
-							<pre>
-								<code>
-
-public class AdapterPatternExample {              //客户端界面
-	public static void main(String args[]) {
-		Player b = new Forwards("巴蒂尔");
-		b.Attack();
-		Player m = new Guards("麦迪");
-		m.Attack();
-		
-		Player ym = new Center("姚明");
-		ym.Attack();
-		ym.Defense();
-	}
-}
-
-abstract class Player {       //球员类
-	protected String name;
-	
-	public Player() {
-		this.name = name;
-	}
-	public abstract void Attack();
-	public abstract void Defense();//进攻、防守抽象方法
-}
-
-class Forwards extends Player {         //前锋
-	public Forwards(String name) {
-		this.name = name;
-	}
-	
-	public void Attack() {
-		System.out.println("前锋 " + name + " 进攻！");
-	}
-	
-	public void Defense() {
-		System.out.println("前锋 " + name + " 防守！");
-	}
-}
-
-class Center extends Player {         //中锋
-	public Center(String name) {
-		this.name = name;
-	}
-	
-	public void Attack() {
-		System.out.println("中锋 " + name + " 进攻！");
-	}
-	
-	public void Defense() {
-		System.out.println("中锋 " + name + " 防守！");
-	}
-}
-
-class Guards extends Player {         //后卫
-	public Guards(String name) {
-		this.name = name;
-	}
-	
-	public void Attack() {
-		System.out.println("后卫 " + name + " 进攻！");
-	}
-	
-	public void Defense() {
-		System.out.println("后卫 " + name + " 防守！");
-	}
-}
-
-								</code>
-							</pre>
-						</figure>
 
 						<div id="AandD" class="bs-callout bs-callout-danger">
 							<h2>代理模式应用</h2>
